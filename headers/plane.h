@@ -5,10 +5,9 @@
 #include <string.h>
 
 class Plane {
-    unsigned int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to inherit these data from a class or properly pass
+    const int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to inherit these data from a class or properly pass
     sf::RectangleShape player;
     sf::Texture playerTexture;
-    int pHeight, pWidth;
     float speed = 0.5;
 
     public:

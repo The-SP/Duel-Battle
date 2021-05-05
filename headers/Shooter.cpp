@@ -32,7 +32,7 @@ sf::FloatRect Shooter::globalBounds() {
     return player.getGlobalBounds();
 }
 
-void Shooter::checkBoundry(int height) {
+void Shooter::checkBoundry() {
     int y = getY();
     if (y < 0)
         dir *= -1;

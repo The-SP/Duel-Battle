@@ -5,15 +5,16 @@
 
 class Bullet {
     private:
+        const int width = 1366, height = 768;
         sf::RectangleShape bullet;
         sf::Texture bulletTexture;
     
     public:
         bool isFiring=false;
-        Bullet(){}
+        Bullet();
         void setBullet();
         void fire(float speed);
         void setPos(sf::Vector2f);
         void drawTo(sf::RenderWindow& window);
-        void checkCollision(Shooter& , Shooter&, sf::Sound&, int width);
+        void checkCollision(Shooter& , Shooter&, sf::Sound&);
 };

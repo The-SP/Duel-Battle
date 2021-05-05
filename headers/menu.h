@@ -11,7 +11,7 @@
 
 class Game {
     private:
-        unsigned width, height;
+        unsigned int width, height;
         sf::RenderWindow window;
         // Text
         sf::Font font;

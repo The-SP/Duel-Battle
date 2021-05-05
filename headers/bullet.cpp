@@ -1,7 +1,7 @@
 #include "bullet.h"
 #include <iostream>
 
-void Bullet::setBullet() {
+Bullet::Bullet() {
     bullet.setSize(sf::Vector2f(75, 50));
     if (!bulletTexture.loadFromFile("./images/fire.png"))
         throw("ERR, Failed to load image file");  
@@ -20,7 +20,7 @@ void Bullet::drawTo(sf::RenderWindow &window) {
     window.draw(bullet);
 }
 
-void Bullet::checkCollision(Shooter &playerBlock, Shooter &enemyBlock, sf::Sound &sound, int width) {
+void Bullet::checkCollision(Shooter &playerBlock, Shooter &enemyBlock, sf::Sound &sound) {
     if (bullet.getGlobalBounds().intersects(enemyBlock.globalBounds())) {
         isFiring = false;
         playerBlock.score++;

@@ -4,6 +4,7 @@
 #include <string.h>
 
 class Shooter {
+    const int width = 1366, height = 768;
     sf::RectangleShape player;
     sf::Texture playerTexture;
     int pHeight;
@@ -17,7 +18,7 @@ class Shooter {
         int getX();
         int getY();
         sf::FloatRect globalBounds();
-        void checkBoundry(int height);
+        void checkBoundry();
         void drawTo(sf::RenderWindow& window);
 };
 

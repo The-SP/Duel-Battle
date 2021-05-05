@@ -6,7 +6,7 @@
 #include "plane.h"
 
 class Asteroid {
-    unsigned int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to inherit these data from a class or properly pass
+    const int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to properly pass or globalize
     int radius = 10;
     int dir;
     float speed = 0.5;

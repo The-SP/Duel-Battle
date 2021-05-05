@@ -15,8 +15,6 @@ Game::Game() {
     // Shooter 
     redShooter.setShooter("./images/red.png", 0, 1);
     blueShooter.setShooter("./images/blue.png", width-75, -1);
-    redBullet.setBullet();
-    blueBullet.setBullet();
 
     //Race Bg
     raceBackground.setSize(sf::Vector2f(width, height));
@@ -72,7 +70,7 @@ void Game::setSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(50);
+    music.setVolume(20);
     music.setLoop(true);
 }
 
@@ -112,8 +110,8 @@ void Game::run() {
 void Game::shooterGame() {
     redShooter.move();
     blueShooter.move();
-    redShooter.checkBoundry(height);
-    blueShooter.checkBoundry(height);
+    redShooter.checkBoundry();
+    blueShooter.checkBoundry();
 
     if (!redBullet.isFiring && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
         redBullet.setPos(sf::Vector2f(redShooter.getX()+50, redShooter.getY()+75/2));
@@ -128,12 +126,12 @@ void Game::shooterGame() {
     window.draw(shooterBackground);
     if (redBullet.isFiring) {
         redBullet.fire(2);
-        redBullet.checkCollision(redShooter, blueShooter, sound, width);
+        redBullet.checkCollision(redShooter, blueShooter, sound);
         redBullet.drawTo(window);
     }
     if (blueBullet.isFiring) {
         blueBullet.fire(-2);
-        blueBullet.checkCollision(blueShooter, redShooter, sound, width);
+        blueBullet.checkCollision(blueShooter, redShooter, sound);
         blueBullet.drawTo(window);
     }
 
@@ -220,7 +218,6 @@ void Game::checkGameOver(int redScore, int blueScore)
     }
     setText(winnerMessage, winner, 50, height/2);
 }
-
 
 void Game::resetGame() {
     gameOver = false;

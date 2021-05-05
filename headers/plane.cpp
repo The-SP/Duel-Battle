@@ -7,8 +7,6 @@ Plane::Plane() {
     if (!playerTexture.loadFromFile("./images/plane.png")) 
         throw("ERR, failed to load image file");
     player.setTexture(&playerTexture);
-    pHeight = playerTexture.getSize().y;
-    pWidth = playerTexture.getSize().x;
 }
 
 void Plane::setPlanePos(int xPos) {
