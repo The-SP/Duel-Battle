@@ -6,7 +6,7 @@
 class Shooter {
     sf::RectangleShape player;
     sf::Texture playerTexture;
-    int pHeight, pWidth;
+    int pHeight;
     float speed = 0.8;
 
     public:

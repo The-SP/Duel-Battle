@@ -35,3 +35,14 @@ void Asteroid::checkBoundry() {
         asteroid.setPosition(0, getRandomPosition().y);
     }
 }
+
+void Asteroid::checkCollision(Plane &redPlane, Plane &bluePlane, sf::Sound &sound) {
+    if (asteroid.getGlobalBounds().intersects(redPlane.globalBounds())) {
+        redPlane.setPlanePos(width/2-100);
+        sound.play();
+    }
+    if (asteroid.getGlobalBounds().intersects(bluePlane.globalBounds())) {
+        bluePlane.setPlanePos(width/2+100);
+        sound.play();
+    }
+}

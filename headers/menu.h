@@ -13,8 +13,10 @@ class Game {
     private:
         unsigned width, height;
         sf::RenderWindow window;
+        // Text
         sf::Font font;
-        sf::Text scoreMessage, winnerMessage, playAgainInstructions;
+        sf::Text scoreMessage, winnerMessage, playInstructions;
+        // Background
         sf::Texture shooterTexture, raceTexture, resultTexture;
         sf::RectangleShape shooterBackground, raceBackground, resultBackground;
         // Sound effects
@@ -32,7 +34,8 @@ class Game {
 
         bool gameOver = false;
         std::string winner = "None";
-        int gameNumber = 1; //0=shooter, 1=racer
+        int gameNumber = 0; //0=shooter, 1=racer
+        int redOverallScore = 0, blueOverallScore = 0;
 
     public: 
         Game();

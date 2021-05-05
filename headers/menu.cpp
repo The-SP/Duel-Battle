@@ -48,10 +48,9 @@ Game::Game() {
         throw ("ERR, Failed to load font file");
     std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
     setText(scoreMessage, strMessage, 25, 15);
-    setText(playAgainInstructions, "Space Racer!", 25, height-200);
-
-
+    setText(playInstructions, "Shooter Game", 25, height-200);
 }
+
 
 void Game::setText(sf::Text& text, std::string strMessage, int characterSize, int positionY) {
     text.setFont(font);
@@ -63,6 +62,7 @@ void Game::setText(sf::Text& text, std::string strMessage, int characterSize, in
     text.setStyle(sf::Text::Bold | sf::Text::Italic);
 }
 
+
 void Game::setSound() {
     // load Punch Sound to buffer
     if (!buffer.loadFromFile("./sound/punch.wav"))
@@ -71,10 +71,11 @@ void Game::setSound() {
     // Background Music
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
-    // music.play();
+    music.play();
     music.setVolume(50);
     music.setLoop(true);
 }
+
 
 void Game::run() {
     while (window.isOpen())
@@ -87,6 +88,9 @@ void Game::run() {
         }
 
         switch(gameNumber) {
+            case 2:
+                std::cout << "ping pong";
+                break;
             case 0:
                 if (!gameOver) 
                     shooterGame();
@@ -141,6 +145,8 @@ void Game::shooterGame() {
     blueShooter.drawTo(window);
     window.display();
     checkGameOver(redShooter.score, blueShooter.score);
+    // setting up result page instruction
+    setText(playInstructions, "Space Race", 25, height-200);
 }
 
 void Game::spaceRace() {
@@ -161,46 +167,47 @@ void Game::spaceRace() {
         bluePlane.checkBoundry(width/2+100, sound);
     }
 
-    // Check Collision
-    //redPlane.checkCollision();
-    // bluePlane.checkCollision();
-
     window.clear();
     window.draw(raceBackground);
     window.draw(spaceRaceBoundry);
-    std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
+    std::string strMessage = "Red: " + std::to_string(redPlane.score) + "   Blue: " + std::to_string(bluePlane.score); 
     scoreMessage.setString(strMessage);
     redPlane.drawTo(window);
     bluePlane.drawTo(window);
     //Asteroids
     for(int i=0; i<30; i++) {
         asteroid[i].move();
+        asteroid[i].checkCollision(redPlane, bluePlane, sound);
         asteroid[i].drawTo(window);
     }
     window.draw(scoreMessage);
     window.display();
     checkGameOver(redPlane.score, bluePlane.score);
+    // setting up result page instruction
+    setText(playInstructions, "Shooter Game", 25, height-200);
 }
+
 
 void Game::resultPage() {
     sf::Vector2i mouse;
     mouse = sf::Mouse::getPosition(window);
-    if (playAgainInstructions.getGlobalBounds().contains(mouse.x, mouse.y)) {
-        playAgainInstructions.setOutlineColor(sf::Color::Red);
-        playAgainInstructions.setOutlineThickness(3);
+    if (playInstructions.getGlobalBounds().contains(mouse.x, mouse.y)) {
+        playInstructions.setOutlineColor(sf::Color::Red);
+        playInstructions.setOutlineThickness(3);
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             resetGame();
         }
     } else {
-        playAgainInstructions.setOutlineThickness(0); 
+        playInstructions.setOutlineThickness(0); 
     }
 
     window.clear();
     window.draw(resultBackground);
     window.draw(winnerMessage);
-    window.draw(playAgainInstructions);
+    window.draw(playInstructions);
     window.display();
 }
+
 
 void Game::checkGameOver(int redScore, int blueScore)
 {
@@ -208,16 +215,22 @@ void Game::checkGameOver(int redScore, int blueScore)
         winner = "Red won!";
     if (blueScore == 3)
         winner = "Blue won!";
-    if (winner != "None")
+    if (winner != "None") {
         gameOver = true;
+    }
     setText(winnerMessage, winner, 50, height/2);
 }
+
 
 void Game::resetGame() {
     gameOver = false;
     redShooter.score = 0;
     blueShooter.score = 0;
+    redPlane.score = 0;
+    bluePlane.score = 0;
     winner = "None";
     sound.play();
     gameNumber++; // change game
+    if (gameNumber==2) 
+        gameNumber = 0;
 }

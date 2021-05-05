@@ -10,7 +10,6 @@ void Shooter::setShooter(std::string imgFile, int xPos, int direction) {
     player.setTexture(&playerTexture);
     player.setPosition(xPos, 768/2);
     pHeight = playerTexture.getSize().y;
-    pWidth = playerTexture.getSize().x;
 }
 
 void Shooter::move() {
