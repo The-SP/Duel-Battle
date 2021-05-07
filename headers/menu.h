@@ -17,10 +17,10 @@ class Game {
         sf::RenderWindow window;
         // Text
         sf::Font font;
-        sf::Text title, howToPlay, scoreMessage, winnerMessage, playInstructions;
+        sf::Text title, howToPlay, scoreText, winnerText, nextGameText;
         // Background
-        sf::Texture homeTexture, pongTexture, shooterTexture, raceTexture, resultTexture;
-        sf::RectangleShape homeBackground, pongBackground, shooterBackground, raceBackground, resultBackground;
+        sf::Texture homeTexture, pongTexture, shooterTexture, raceTexture;
+        sf::RectangleShape homeBackground, pongBackground, shooterBackground, raceBackground;
         // Sound effects
         sf::Sound sound;
         sf::SoundBuffer buffer;
@@ -41,6 +41,7 @@ class Game {
         bool gameOver = false;
         std::string winner = "None";
         int gameNumber = 0;//0=home, 1=pingpong, 2=shooter, 3=racer
+        int redFinalScore = 0, blueFinalScore = 0;
 
     public: 
         Game();
@@ -48,11 +49,12 @@ class Game {
         void setSound();
         void run();
         void homePage();
+        void endPage();
         void pingPong();
         void shooterGame();
         void spaceRace();
-        void resultPage();
-        void selectMenuOption();
+        void resultPage(sf::RectangleShape &background);
+        void selectMenuOption(sf::Text &text);
         void checkGameOver(int redScore, int blueScore);
         void resetGame();
 };

@@ -20,7 +20,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     { // here -10 is done becz origin of ball at (10, 10)
         resetPosition();
         red.score++;
-        speedX *= -1;
+        speedX = -0.9; // reseting horizontal speed
         // to create slightly random y motion after restart
         speedY *= -1;
         sound.play();
@@ -30,7 +30,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     {
         resetPosition();
         blue.score++;
-        speedX *= -1;
+        speedX = -0.9;
         sound.play();
 
     }
@@ -51,12 +51,12 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     */
     if (ball.getGlobalBounds().intersects(red.globalBounds())) { 
         ball.setPosition(50, ball.getPosition().y);
-        speedX *= -1;
+        speedX *= -1.08; // to increase horizontal speed after each collision
         sound.play();
     }
     if (ball.getGlobalBounds().intersects(blue.globalBounds())) {
         ball.setPosition(width-50, ball.getPosition().y);
-        speedX *= -1;
+        speedX *= -1.08;
         sound.play();
     }
 }
