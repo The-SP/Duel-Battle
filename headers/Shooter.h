@@ -8,7 +8,7 @@ class Shooter {
     sf::RectangleShape player;
     sf::Texture playerTexture;
     int pHeight;
-    float speed = 0.8;
+    float speed = 1;
 
     public:
         int score=0, dir;

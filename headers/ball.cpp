@@ -20,7 +20,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     { // here -10 is done becz origin of ball at (10, 10)
         resetPosition();
         red.score++;
-        speedX = -0.9; // reseting horizontal speed
+        speedX = -1; // reseting horizontal speed
         // to create slightly random y motion after restart
         speedY *= -1;
         sound.play();
@@ -30,7 +30,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     {
         resetPosition();
         blue.score++;
-        speedX = -0.9;
+        speedX = 1;
         sound.play();
 
     }

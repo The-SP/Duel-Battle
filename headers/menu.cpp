@@ -8,8 +8,8 @@ Game::Game() {
         as it includes taskbar and some other weird reasons
         so  find best way for fullscreen
     */
-    // window.create(sf::VideoMode(), "Duel: Multiplayer Battle", sf::Style::Fullscreen);
     window.create(sf::VideoMode(1366, 768), "Duel: Multiplayer Battle");
+    // window.create(sf::VideoMode(), "Duel: Multiplayer Battle", sf::Style::Fullscreen);
     width = window.getSize().x;
     height = window.getSize().y;
     // std::cout << width << "," << height;
@@ -59,12 +59,34 @@ Game::Game() {
     if (!font.loadFromFile("arial.ttf"))
         throw ("ERR, Failed to load font file");
     // home
-    setText(title, "DUEL", 50, 100);
-    setText(howToPlay, "Use Up, Down to move Blue and W, S to move Red!", 25, height-200);
+    setText(title1, "DUEL BATTLE", 75, 100);
+    setTextOutline(title1, sf::Color::Black);
+    setText(title2, "Pong, Shooter and Space Race", 25, 175);
     // game result page
     std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
-    setText(scoreText, strMessage, 25, 15);
-    setText(nextGameText, "Press Space to play Ping Pong", 25, height-100);
+    setText(scoreText, strMessage, 35, 15);
+    // how To Play page
+    setText(score3ToWinText, "Score 3 to Win!", 35, height/2+50);
+    setTextOutline(score3ToWinText, sf::Color::Magenta);
+    setText(howToPlayText[1], "Use W, S to move Red Bat and Up, Down to move Blue bat", 35, height/2);
+    setText(howToPlayText[2], "Use Space to shoot if Red and Enter if Blue", 35, height/2);
+    setText(howToPlayText[3], "Use W, S to move Red Plane and Up, Down to move Blue Plane", 35, height/2)
+    ;
+    setText(gameNameText[1], "Ping Pong Battle", 50, 200);
+    setText(gameNameText[2], "Fastest Shooter Battle", 50, 200);
+    setText(gameNameText[3], "Space Race Battle", 50, 200)
+    ;
+    for(int i=1; i<4; i++) {
+        setTextOutline(gameNameText[i], sf::Color::Black);
+        setTextOutline(howToPlayText[i], sf::Color::Magenta);
+    }
+    setText(startBattleText, "Start Battle!", 50, height-200);
+    // bottom text
+    std::string nextGameString[5] = {"Press Space to play Ping Pong", "Shooter Battle", "Space Race", "See the winner", "Press Enter to play again"};
+    for (int i=0; i<5; i++) {
+        setText(nextGameText[i], nextGameString[i], 35, height-150);
+        setTextOutline(nextGameText[i], sf::Color::Black);
+    }
 }
 
 
@@ -78,9 +100,12 @@ void Game::setText(sf::Text& text, std::string strMessage, int characterSize, in
     text.setStyle(sf::Text::Bold | sf::Text::Italic);
 }
 
+void Game::setTextOutline(sf::Text& text, sf::Color color) {
+    text.setOutlineColor(color);
+    text.setOutlineThickness(5);
+}
 
 void Game::setSound() {
-    // load Punch Sound to buffer
     if (!buffer.loadFromFile("./sound/punch.wav"))
         throw("ERR, cant load sound");
     sound.setBuffer(buffer);
@@ -88,7 +113,7 @@ void Game::setSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(20);
+    music.setVolume(30);
     music.setLoop(true);
 }
 
@@ -113,21 +138,27 @@ void Game::run() {
                 homePage();
                 break;
             case 1:
-                if (!gameOver) 
+                if (showHowToPlay)
+                    howToPlayPage(pongBackground);
+                if (!showHowToPlay && !gameOver) 
                     pingPong();
-                if (gameOver) 
+                if (!showHowToPlay && gameOver) 
                     resultPage(pongBackground);
                 break;
             case 2:
-                if (!gameOver) 
+                if (showHowToPlay)
+                    howToPlayPage(shooterBackground);
+                if (!showHowToPlay && !gameOver) 
                     shooterGame();
-                if (gameOver) 
+                if (!showHowToPlay && gameOver) 
                     resultPage(shooterBackground);
                 break;
             case 3:
-                if (!gameOver) 
+                if (showHowToPlay)
+                    howToPlayPage(raceBackground);
+                if (!showHowToPlay && !gameOver) 
                     spaceRace();
-                if (gameOver) 
+                if (!showHowToPlay && gameOver) 
                     resultPage(raceBackground);
                 break;
             case 4:
@@ -143,32 +174,36 @@ void Game::run() {
 void  Game::homePage() {
     window.clear();
     window.draw(homeBackground);
-    window.draw(title);
-    window.draw(howToPlay);
-    window.draw(nextGameText);
+    window.draw(title1);
+    window.draw(title2);
+    window.draw(nextGameText[0]);
     window.display();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        resetGame();
+        gameNumber++;
 }
 
+
+void  Game::howToPlayPage(sf::RectangleShape& background) {
+    window.clear();
+    window.draw(background);
+    window.draw(gameNameText[gameNumber]);
+    window.draw(howToPlayText[gameNumber]);
+    window.draw(score3ToWinText);
+    window.draw(startBattleText);
+    window.display();
+    if (isMenuSelected(startBattleText))
+        showHowToPlay = false;
+}
+
+
 void Game::endPage() {
-    if (redFinalScore > blueFinalScore) {
-        winner = "Red won the series!";
-    } else {
-        winner = "Blue won the series!";
-    }
-    std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
-    scoreText.setString(strMessage);
-    setText(winnerText, winner, 50, 100);
-    setText(nextGameText, "Press Enter for Rematch", 25, height-100);
     window.clear();
     window.draw(homeBackground);
     window.draw(scoreText);
     window.draw(winnerText);
-    window.draw(nextGameText);
+    window.draw(nextGameText[4]);
     window.display();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
-    setText(nextGameText, "Press Space for Ping Pong", 25, height-100);
         resetGame();
     }
 }
@@ -200,8 +235,6 @@ void Game::pingPong() {
     window.draw(scoreText);
     window.display();
     checkGameOver(redBat.score, blueBat.score);
-    // setting up result page instruction
-    setText(nextGameText, "Shooter Game", 25, height-100);
 }
 
 
@@ -223,12 +256,12 @@ void Game::shooterGame() {
     window.clear();
     window.draw(shooterBackground);
     if (redBullet.isFiring) {
-        redBullet.fire(2);
+        redBullet.fire(2.5);
         redBullet.checkCollision(redShooter, blueShooter, sound);
         redBullet.drawTo(window);
     }
     if (blueBullet.isFiring) {
-        blueBullet.fire(-2);
+        blueBullet.fire(-2.5);
         blueBullet.checkCollision(blueShooter, redShooter, sound);
         blueBullet.drawTo(window);
     }
@@ -241,8 +274,6 @@ void Game::shooterGame() {
     blueShooter.drawTo(window);
     window.display();
     checkGameOver(redShooter.score, blueShooter.score);
-    // setting up result page instruction
-    setText(nextGameText, "Space Race", 25, height-100);
 }
 
 void Game::spaceRace() {
@@ -279,33 +310,33 @@ void Game::spaceRace() {
     window.draw(scoreText);
     window.display();
     checkGameOver(redPlane.score, bluePlane.score);
-    // setting up result page instruction
-    setText(nextGameText, "Show the DUEL King!", 25, height-100);
 }
 
 
-void Game::selectMenuOption(sf::Text &text) {
+bool Game::isMenuSelected(sf::Text &text) {
     sf::Vector2i mouse;
     mouse = sf::Mouse::getPosition(window);
     if (text.getGlobalBounds().contains(mouse.x, mouse.y)) {
         text.setOutlineColor(sf::Color::Red);
         text.setOutlineThickness(3);
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            resetGame();
+            return true;
         }
     } else {
         text.setOutlineThickness(0); 
     }
+    return false;
 }
 
 
 void Game::resultPage(sf::RectangleShape &background) {
-    selectMenuOption(nextGameText);
+    if (isMenuSelected(nextGameText[gameNumber]))
+        resetGame();
     window.clear();
     window.draw(background);
     window.draw(scoreText);
     window.draw(winnerText);
-    window.draw(nextGameText);
+    window.draw(nextGameText[gameNumber]);
     window.display();
 }
 
@@ -322,17 +353,30 @@ void Game::checkGameOver(int redScore, int blueScore)
     }
     if (winner != "None") {
         gameOver = true;
-        setText(winnerText, winner, 50, height/2);
+        setText(winnerText, winner, 70, 300);
+        setTextOutline(winnerText, sf::Color::Black);
     }
 }
 
-
 void Game::resetGame() {
     gameOver = false;
+    showHowToPlay = true;
     winner = "None";
     sound.play();
     gameNumber++; // change game
-    if (gameNumber==5) {
+
+    if (gameNumber == 4) {  // final result page
+        if (redFinalScore > blueFinalScore) {
+            winner = "Red won the series!";
+        } else {
+            winner = "Blue won the series!";
+        }
+        std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
+        scoreText.setString(strMessage);
+        setText(winnerText, winner, 50, 100);
+    }
+
+    if (gameNumber==5) { // reset after end page
         gameNumber = 0;
         // reseting all scores
         redFinalScore = 0;

@@ -17,7 +17,7 @@ class Game {
         sf::RenderWindow window;
         // Text
         sf::Font font;
-        sf::Text title, howToPlay, scoreText, winnerText, nextGameText;
+        sf::Text title1, title2, scoreText, startBattleText, gameNameText[5], howToPlayText[5], score3ToWinText, winnerText, nextGameText[5];
         // Background
         sf::Texture homeTexture, pongTexture, shooterTexture, raceTexture;
         sf::RectangleShape homeBackground, pongBackground, shooterBackground, raceBackground;
@@ -38,23 +38,26 @@ class Game {
         // Asteroid
         Asteroid asteroid[30];
 
+        bool showHowToPlay = true;
         bool gameOver = false;
         std::string winner = "None";
-        int gameNumber = 0;//0=home, 1=pingpong, 2=shooter, 3=racer
+        int gameNumber = 0;//0=home, 1=pingpong, 2=shooter, 3=racer 4=endPage
         int redFinalScore = 0, blueFinalScore = 0;
 
     public: 
         Game();
         void setText(sf::Text& text, std::string strMessage, int characterSize, int positionY);
+        void setTextOutline(sf::Text& text, sf::Color color);
         void setSound();
         void run();
         void homePage();
+        void howToPlayPage(sf::RectangleShape &background);
+        void resultPage(sf::RectangleShape &background);
         void endPage();
         void pingPong();
         void shooterGame();
         void spaceRace();
-        void resultPage(sf::RectangleShape &background);
-        void selectMenuOption(sf::Text &text);
+        bool isMenuSelected(sf::Text &text);
         void checkGameOver(int redScore, int blueScore);
         void resetGame();
 };
