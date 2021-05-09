@@ -1,6 +1,7 @@
 #include "menu.h"
 
 Game::Game() {
+    srand(time(0));
     /* 
         Note: 
         while using sf::Style::Fullscreen it lags sometimes 
@@ -210,9 +211,7 @@ void Game::endPage() {
 
 
 void Game::pingPong() {
-    // Move ball
     ball.moveBall();
-    // Check ball boundry conditions and collision with bat
     ball.checkBoundry(redBat, blueBat, sound);
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
@@ -240,9 +239,7 @@ void Game::pingPong() {
 
 void Game::shooterGame() {
     redShooter.move();
-    blueShooter.move();
-    redShooter.checkBoundry();
-    blueShooter.checkBoundry();
+    blueShooter.move(); // also checks boundry
 
     if (!redBullet.isFiring && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
         redBullet.setPos(sf::Vector2f(redShooter.getX()+50, redShooter.getY()+75/2));
@@ -269,12 +266,12 @@ void Game::shooterGame() {
     std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
     scoreText.setString(strMessage);
     window.draw(scoreText);
-
     redShooter.drawTo(window);
     blueShooter.drawTo(window);
     window.display();
     checkGameOver(redShooter.score, blueShooter.score);
 }
+
 
 void Game::spaceRace() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
@@ -302,7 +299,7 @@ void Game::spaceRace() {
     redPlane.drawTo(window);
     bluePlane.drawTo(window);
     //Asteroids
-    for(int i=0; i<30; i++) {
+    for(int i=0; i<40; i++) {
         asteroid[i].move();
         asteroid[i].checkCollision(redPlane, bluePlane, sound);
         asteroid[i].drawTo(window);
@@ -320,6 +317,7 @@ bool Game::isMenuSelected(sf::Text &text) {
         text.setOutlineColor(sf::Color::Red);
         text.setOutlineThickness(3);
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            sound.play();
             return true;
         }
     } else {
@@ -358,11 +356,11 @@ void Game::checkGameOver(int redScore, int blueScore)
     }
 }
 
+
 void Game::resetGame() {
     gameOver = false;
     showHowToPlay = true;
     winner = "None";
-    sound.play();
     gameNumber++; // change game
 
     if (gameNumber == 4) {  // final result page

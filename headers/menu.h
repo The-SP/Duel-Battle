@@ -10,6 +10,7 @@
 #include "./asteroid.h"
 #include <iostream>
 #include <string.h>
+#include <ctime>
 
 class Game {
     private:
@@ -36,7 +37,7 @@ class Game {
         Plane redPlane, bluePlane;
         sf::RectangleShape spaceRaceBoundry;
         // Asteroid
-        Asteroid asteroid[30];
+        Asteroid asteroid[40];
 
         bool showHowToPlay = true;
         bool gameOver = false;
@@ -44,12 +45,10 @@ class Game {
         int gameNumber = 0;//0=home, 1=pingpong, 2=shooter, 3=racer 4=endPage
         int redFinalScore = 0, blueFinalScore = 0;
 
-    public: 
-        Game();
+    private: 
         void setText(sf::Text& text, std::string strMessage, int characterSize, int positionY);
         void setTextOutline(sf::Text& text, sf::Color color);
         void setSound();
-        void run();
         void homePage();
         void howToPlayPage(sf::RectangleShape &background);
         void resultPage(sf::RectangleShape &background);
@@ -60,4 +59,11 @@ class Game {
         bool isMenuSelected(sf::Text &text);
         void checkGameOver(int redScore, int blueScore);
         void resetGame();
+
+    public:
+        Game();
+        void run();
+
+
+
 };

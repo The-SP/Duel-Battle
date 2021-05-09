@@ -14,6 +14,7 @@ void Shooter::setShooter(std::string imgFile, int xPos, int direction) {
 
 void Shooter::move() {
     player.move(0, dir*speed);
+    checkBoundry();
 }
 
 void Shooter::drawTo(sf::RenderWindow& window) {
