@@ -9,7 +9,7 @@ Game::Game() {
         as it includes taskbar and some other weird reasons
         so  find best way for fullscreen
     */
-    window.create(sf::VideoMode(1366, 768), "Duel: Multiplayer Battle");
+    window.create(sf::VideoMode(1366, 768), "Duel: Multiplayer Battle", sf::Style::Titlebar | sf::Style::Close);
     // window.create(sf::VideoMode(), "Duel: Multiplayer Battle", sf::Style::Fullscreen);
     width = window.getSize().x;
     height = window.getSize().y;
