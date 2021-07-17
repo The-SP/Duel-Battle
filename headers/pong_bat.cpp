@@ -1,4 +1,5 @@
-#include "bat.h"
+#include "pong_bat.h"
+#include "global.h"
 
 Bat::Bat() {
     bat.setSize(sf::Vector2f(16, 100));
@@ -8,7 +9,7 @@ Bat::Bat() {
 }
 
 void Bat::setBat(sf::Color colorName, int positionX) {
-    bat.setPosition(positionX, height/2);
+    bat.setPosition(positionX, HEIGHT/2);
     bat.setFillColor(colorName);
 }
 

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
-#include "plane.h"
+#include "space_plane.h"
 
 class Asteroid {
     const int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to properly pass or globalize

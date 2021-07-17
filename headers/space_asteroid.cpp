@@ -1,4 +1,4 @@
-#include "asteroid.h"
+#include "space_asteroid.h"
 
 Asteroid::Asteroid() {
     if (rand()%2 == 0)

@@ -1,10 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "bat.h"
+#include "pong_bat.h"
 
 class Ball {
-    const int width=1366, height=768;
     float speedX=0.8, speedY=-0.8; // initial motion(right, down)
     int radius = 10;
     sf::CircleShape ball;

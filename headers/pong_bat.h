@@ -3,7 +3,6 @@
 
 
 class Bat {
-    const int width=1366, height=768;
     float speed = 0.8;
     sf::RectangleShape bat;
 
