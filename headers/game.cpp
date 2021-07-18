@@ -2,7 +2,6 @@
 
 Game::Game() {
     window.create(sf::VideoMode(WIDTH, HEIGHT), "Duel: Multiplayer Battle", sf::Style::Titlebar | sf::Style::Close);
-    // window.create(sf::VideoMode(), "Duel: Multiplayer Battle", sf::Style::Fullscreen);
 
     //Home page
     homeBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -18,15 +17,6 @@ Game::Game() {
     // Bat and Ball
     redBat.setBat(sf::Color::Red, 18);
     blueBat.setBat(sf::Color::Blue, WIDTH-18);
-
-    // //Shooter Bg
-    // shooterBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
-    // if (!shooterTexture.loadFromFile("./images/shooter.png"))
-    //     throw("ERR, Failed to load image file");  
-    // shooterBackground.setTexture(&shooterTexture);
-    // // Shooter 
-    // redShooter.setShooter("./images/red.png", 0, 1);
-    // blueShooter.setShooter("./images/blue.png", WIDTH-75, -1);
 
     //Race Bg
     raceBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -48,37 +38,38 @@ Game::Game() {
     if (!font.loadFromFile("arial.ttf"))
         throw ("ERR, Failed to load font file");
     // home
-    setText(title1, "DUEL BATTLE", 75, 100);
-    // setTextOutline(title1, sf::Color::Black);
-    setText(title2, "Pong, Space Race and Jungle Run", 25, 175);
+    initText(title1, "DUEL Game Package", 75, 100);
+    initText(title2, "Pong, Space Race and Jungle Run", 25, 175);
     // game result page
     std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
-    setText(scoreText, strMessage, 35, 15);
-    // how To Play page
-    setText(score3ToWinText, "Score 3 to Win!", 35, HEIGHT/2+50);
-    setTextOutline(score3ToWinText, sf::Color::Magenta);
-    setText(howToPlayText[1], "Use W, S to move Red Bat and Up, Down to move Blue bat", 35, HEIGHT/2);
-    setText(howToPlayText[2], "Use W, S to move Red Plane and Up, Down to move Blue Plane", 35, HEIGHT/2);
-    setText(howToPlayText[3], "Use Space to Jump Right to Shoot and Down to Slide", 35, HEIGHT/2);
-    setText(gameNameText[1], "Ping Pong Battle", 50, 200);
-    setText(gameNameText[2], "Space Race Battle", 50, 200);
-    setText(gameNameText[3], "Jungle Run", 50, 200);
+    initText(scoreText, strMessage, 35, 15);
 
-    for(int i=1; i<4; i++) {
-        setTextOutline(gameNameText[i], sf::Color::Black);
-        setTextOutline(howToPlayText[i], sf::Color::Magenta);
+    // How To Play
+    initTexture(howToRect[1], howToTexture[1], sf::Vector2f(700, 400), "images/pongHowTo.jpg");
+    initTexture(howToRect[2], howToTexture[2], sf::Vector2f(700, 400), "images/spaceHowTo.jpg");
+    initTexture(howToRect[3], howToTexture[3], sf::Vector2f(700, 400), "images/jungleHowTo.jpg");
+    for (int i=1; i<4; i++) {
+        howToRect[i].setOutlineColor(sf::Color::White);
+        howToRect[i].setOutlineThickness(3.f);
     }
-    setText(startBattleText, "Start Battle!", 50, HEIGHT-200);
-    // bottom text
-    std::string nextGameString[5] = {"Press Space to play Ping Pong", "Space Race", "Jungle Run", "See the winner", "Press Enter to play again"};
-    for (int i=0; i<5; i++) {
-        setText(nextGameText[i], nextGameString[i], 35, HEIGHT-150);
-        setTextOutline(nextGameText[i], sf::Color::Black);
-    }
+
+    // Buttons 
+    initTexture(playButton, buttonTexture[0], sf::Vector2f(100, 100), "images/redButton.png");
+    if (!buttonTexture[1].loadFromFile("images/greenButton.png"))
+        throw("ERR, Failed to load image file");  
+    playButton.setPosition(WIDTH/2-playButton.getSize().x/2, HEIGHT-150);
+}
+
+void Game::initTexture(sf::RectangleShape& rect, sf::Texture& texture, const sf::Vector2f& size, const std::string& imageFile) {
+    rect.setSize(size);
+    if (!texture.loadFromFile(imageFile))
+        throw("ERR, Failed to load image file");  
+    rect.setTexture(&texture);
+    rect.setPosition(WIDTH/2-rect.getSize().x/2, HEIGHT/2-rect.getSize().y/2);   
 }
 
 
-void Game::setText(sf::Text& text, std::string strMessage, int characterSize, int positionY) {
+void Game::initText(sf::Text& text, std::string strMessage, int characterSize, int positionY) {
     text.setFont(font);
     text.setString(strMessage);
     text.setCharacterSize(characterSize); 
@@ -86,11 +77,6 @@ void Game::setText(sf::Text& text, std::string strMessage, int characterSize, in
     text.setPosition(WIDTH/2, positionY);
     text.setFillColor(sf::Color::White);
     text.setStyle(sf::Text::Bold | sf::Text::Italic);
-}
-
-void Game::setTextOutline(sf::Text& text, sf::Color color) {
-    text.setOutlineColor(color);
-    text.setOutlineThickness(5);
 }
 
 void Game::setSound() {
@@ -101,14 +87,16 @@ void Game::setSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(30);
+    music.setVolume(10);
     music.setLoop(true);
 }
 
 
 void Game::run() {
+    sf::Clock clock;
     while (window.isOpen())
     {
+        deltaTime = clock.restart().asSeconds();
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -118,7 +106,9 @@ void Game::run() {
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
-            }            
+            }
+            if (event.type == sf::Event::MouseButtonPressed)
+                buttonPressedEvent = true;
         }
 
         switch(gameNumber) {
@@ -145,7 +135,7 @@ void Game::run() {
                 if (showHowToPlay)
                     howToPlayPage(shooterBackground);
                 if (!showHowToPlay && !gameOver) 
-                    shooterGame();
+                    jungleRun();
                 if (!showHowToPlay && gameOver) 
                     resultPage(shooterBackground);
                 break;
@@ -164,22 +154,20 @@ void  Game::homePage() {
     window.draw(homeBackground);
     window.draw(title1);
     window.draw(title2);
-    window.draw(nextGameText[0]);
+    window.draw(playButton);
     window.display();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+    if (isButtonSelected(playButton))
         gameNumber++;
 }
 
 
-void  Game::howToPlayPage(sf::RectangleShape& background) {
+void Game::howToPlayPage(sf::RectangleShape& background) {
     window.clear();
     window.draw(background);
-    window.draw(gameNameText[gameNumber]);
-    window.draw(howToPlayText[gameNumber]);
-    window.draw(score3ToWinText);
-    window.draw(startBattleText);
+    window.draw(playButton);
+    window.draw(howToRect[gameNumber]);
     window.display();
-    if (isMenuSelected(startBattleText))
+    if (isButtonSelected(playButton))
         showHowToPlay = false;
 }
 
@@ -189,9 +177,9 @@ void Game::endPage() {
     window.draw(homeBackground);
     window.draw(scoreText);
     window.draw(winnerText);
-    window.draw(nextGameText[4]);
+    window.draw(playButton);
     window.display();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+    if (isButtonSelected(playButton)) {
         resetGame();
     }
 }
@@ -261,37 +249,38 @@ void Game::spaceRace() {
 }
 
 
-void Game::shooterGame() {
+void Game::jungleRun() {
     blueShooter.score = 3;
     checkGameOver(redShooter.score, blueShooter.score);
 }
 
 
-bool Game::isMenuSelected(sf::Text &text) {
+bool Game::isButtonSelected(sf::RectangleShape &button) {
     sf::Vector2i mouse;
     mouse = sf::Mouse::getPosition(window);
-    if (text.getGlobalBounds().contains(mouse.x, mouse.y)) {
-        text.setOutlineColor(sf::Color::Red);
-        text.setOutlineThickness(3);
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    if (button.getGlobalBounds().contains(mouse.x, mouse.y)) {
+        button.setTexture(&buttonTexture[1]);
+        if (buttonPressedEvent && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sound.play();
+            buttonPressedEvent = false;
             return true;
         }
     } else {
-        text.setOutlineThickness(0); 
+        button.setTexture(&buttonTexture[0]);
+        button.setOutlineThickness(0);
     }
     return false;
 }
 
 
 void Game::resultPage(sf::RectangleShape &background) {
-    if (isMenuSelected(nextGameText[gameNumber]))
+    if (isButtonSelected(playButton))
         resetGame();
     window.clear();
     window.draw(background);
     window.draw(scoreText);
     window.draw(winnerText);
-    window.draw(nextGameText[gameNumber]);
+    window.draw(playButton);
     window.display();
 }
 
@@ -301,15 +290,17 @@ void Game::checkGameOver(int redScore, int blueScore)
     if (redScore == 3) {
         redFinalScore++;
         winner = "Red won!";
+        winnerText.setOutlineColor(sf::Color::Red);
     }
     if (blueScore == 3) {
         blueFinalScore++;
         winner = "Blue won!";
+        winnerText.setOutlineColor(sf::Color::Blue);
     }
     if (winner != "None") {
         gameOver = true;
-        setText(winnerText, winner, 70, 300);
-        setTextOutline(winnerText, sf::Color::Black);
+        initText(winnerText, winner, 70, 300);
+        winnerText.setOutlineThickness(5.f);
     }
 }
 
@@ -328,7 +319,7 @@ void Game::resetGame() {
         }
         std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
         scoreText.setString(strMessage);
-        setText(winnerText, winner, 50, 100);
+        initText(winnerText, winner, 50, 100);
     }
 
     if (gameNumber==5) { // reset after end page

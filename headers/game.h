@@ -18,7 +18,7 @@ private:
     sf::RenderWindow window;
     // Text
     sf::Font font;
-    sf::Text title1, title2, scoreText, startBattleText, gameNameText[5], howToPlayText[5], score3ToWinText, winnerText, nextGameText[5];
+    sf::Text title1, title2, scoreText, winnerText;
     // Background
     sf::Texture homeTexture, pongTexture, shooterTexture, raceTexture;
     sf::RectangleShape homeBackground, pongBackground, shooterBackground, raceBackground;
@@ -30,10 +30,9 @@ private:
     // PingPong
     Bat redBat, blueBat;
     Ball ball;
-    // Plane
+    // Space Race
     Plane redPlane, bluePlane;
     sf::RectangleShape spaceRaceBoundry;
-    // Asteroid
     Asteroid asteroid[40];
     // Shooter and bullet
     Shooter redShooter, blueShooter;
@@ -45,20 +44,32 @@ private:
     int gameNumber = 0;//0=home, 1=pingpong, 2=space race, 3=jungle run 4=endPage
     int redFinalScore = 0, blueFinalScore = 0;
 
+    float deltaTime;
+    bool buttonPressedEvent = false;
+    // how to play
+    sf::Texture howToTexture[4];
+    sf::RectangleShape howToRect[4];
+    sf::RectangleShape playButton;
+    sf::Texture buttonTexture[2];
+
 private: 
-    void setText(sf::Text& text, std::string strMessage, int characterSize, int positionY);
-    void setTextOutline(sf::Text& text, sf::Color color);
+    void initText(sf::Text& text, std::string strMessage, int characterSize, int positionY);
     void setSound();
+
+    // Pages
     void homePage();
     void howToPlayPage(sf::RectangleShape &background);
     void resultPage(sf::RectangleShape &background);
     void endPage();
     void pingPong();
-    void shooterGame();
+    void jungleRun();
     void spaceRace();
-    bool isMenuSelected(sf::Text &text);
     void checkGameOver(int redScore, int blueScore);
     void resetGame();
+
+    // Menu
+    bool isButtonSelected(sf::RectangleShape& button);
+    void initTexture(sf::RectangleShape& rect, sf::Texture& texture, const sf::Vector2f& size, const std::string& imageFile);
 
 public:
     Game();
