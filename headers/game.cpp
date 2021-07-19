@@ -19,10 +19,14 @@ Game::Game() {
     blueBat.setBat(sf::Color::Blue, WIDTH-18);
 
     //Race Bg
-    raceBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
-    if (!raceTexture.loadFromFile("./images/space.jpg"))
+    spaceBackground[0].setSize(sf::Vector2f(WIDTH, HEIGHT));
+    spaceBackground[1].setSize(sf::Vector2f(WIDTH, HEIGHT));
+    if (!spaceTexture[0].loadFromFile("./images/space.jpg"))
         throw("ERR, Failed to load image file");  
-    raceBackground.setTexture(&raceTexture);
+    if (!spaceTexture[1].loadFromFile("./images/space1.jpg"))
+        throw("ERR, Failed to load image file");  
+    spaceBackground[0].setTexture(&spaceTexture[0]);
+    spaceBackground[1].setTexture(&spaceTexture[1]);
     // Planes
     redPlane.setPlanePos(WIDTH/2-100);
     bluePlane.setPlanePos(WIDTH/2+100);
@@ -30,6 +34,13 @@ Game::Game() {
     spaceRaceBoundry.setSize(sf::Vector2f(5, 250));
     spaceRaceBoundry.setPosition(WIDTH/2-5, HEIGHT-250);
     spaceRaceBoundry.setFillColor(sf::Color::White);
+
+
+    // Jungle Run
+    jungleBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
+    if (!jungleTexture.loadFromFile("./images/bg111.png"))
+        throw("ERR, Failed to load image file");  
+    jungleBackground.setTexture(&jungleTexture);
 
     // Sound
     setSound();
@@ -41,7 +52,7 @@ Game::Game() {
     initText(title1, "DUEL Game Package", 75, 100);
     initText(title2, "Pong, Space Race and Jungle Run", 25, 175);
     // game result page
-    std::string strMessage = "Red: " + std::to_string(redShooter.score) + "   Blue: " + std::to_string(blueShooter.score); 
+    std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
     initText(scoreText, strMessage, 35, 15);
 
     // How To Play
@@ -89,6 +100,7 @@ void Game::setSound() {
     music.play();
     music.setVolume(10);
     music.setLoop(true);
+    sound.setVolume(25);
 }
 
 
@@ -112,10 +124,10 @@ void Game::run() {
         }
 
         switch(gameNumber) {
-            case 0:
+            case HOME_INDEX:
                 homePage();
                 break;
-            case 1:
+            case PING_PONG:
                 if (showHowToPlay)
                     howToPlayPage(pongBackground);
                 if (!showHowToPlay && !gameOver) 
@@ -123,23 +135,23 @@ void Game::run() {
                 if (!showHowToPlay && gameOver) 
                     resultPage(pongBackground);
                 break;
-            case 2:
+            case SPACE_RACE:
                 if (showHowToPlay)
-                    howToPlayPage(raceBackground);
+                    howToPlayPage(spaceBackground[0]);
                 if (!showHowToPlay && !gameOver) 
                     spaceRace();
                 if (!showHowToPlay && gameOver) 
-                    resultPage(raceBackground);
+                    resultPage(spaceBackground[0]);
                 break;
-            case 3:
+            case JUNGLE_RUN:
                 if (showHowToPlay)
-                    howToPlayPage(shooterBackground);
+                    howToPlayPage(jungleBackground);
                 if (!showHowToPlay && !gameOver) 
                     jungleRun();
                 if (!showHowToPlay && gameOver) 
-                    resultPage(shooterBackground);
+                    resultPage(jungleBackground);
                 break;
-            case 4:
+            case RESULT_INDEX:
                 endPage();
                 break;
             default:
@@ -228,7 +240,7 @@ void Game::spaceRace() {
     bluePlane.checkBoundry(WIDTH/2+100, sound);
 
     window.clear();
-    window.draw(raceBackground);
+    window.draw(spaceBackground[Plane::currentSpaceBackgroundIndex]);
     window.draw(spaceRaceBoundry);
     redPlane.drawTo(window);
     bluePlane.drawTo(window);
@@ -250,8 +262,7 @@ void Game::spaceRace() {
 
 
 void Game::jungleRun() {
-    blueShooter.score = 3;
-    checkGameOver(redShooter.score, blueShooter.score);
+    checkGameOver(2, 3);
 }
 
 
@@ -260,6 +271,7 @@ bool Game::isButtonSelected(sf::RectangleShape &button) {
     mouse = sf::Mouse::getPosition(window);
     if (button.getGlobalBounds().contains(mouse.x, mouse.y)) {
         button.setTexture(&buttonTexture[1]);
+        button.setScale(1.05, 1.05);
         if (buttonPressedEvent && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sound.play();
             buttonPressedEvent = false;
@@ -267,7 +279,7 @@ bool Game::isButtonSelected(sf::RectangleShape &button) {
         }
     } else {
         button.setTexture(&buttonTexture[0]);
-        button.setOutlineThickness(0);
+        button.setScale(1, 1);
     }
     return false;
 }
@@ -311,7 +323,7 @@ void Game::resetGame() {
     winner = "None";
     gameNumber++; // change game
 
-    if (gameNumber == 4) {  // final result page
+    if (gameNumber == RESULT_INDEX) {  // final result page - 4
         if (redFinalScore > blueFinalScore) {
             winner = "Red won the series!";
         } else {
@@ -322,15 +334,15 @@ void Game::resetGame() {
         initText(winnerText, winner, 50, 100);
     }
 
-    if (gameNumber==5) { // reset after end page
-        gameNumber = 0;
+    if (gameNumber == RESULT_INDEX + 1) { // reset after end page - 5
+        gameNumber = HOME_INDEX; //0
         // reseting all scores
         redFinalScore = 0;
         blueFinalScore = 0;
         redBat.score = 0;
         blueBat.score = 0;
-        redShooter.score = 0;
-        blueShooter.score = 0;
+        // redShooter.score = 0;
+        // blueShooter.score = 0;
         redPlane.score = 0;
         bluePlane.score = 0;
     }

@@ -9,8 +9,6 @@
 #include "space_plane.h"
 #include "space_asteroid.h"
 #include "global.h"
-#include "./Shooter.h"
-#include "./bullet.h"
 
 
 class Game {
@@ -20,8 +18,8 @@ private:
     sf::Font font;
     sf::Text title1, title2, scoreText, winnerText;
     // Background
-    sf::Texture homeTexture, pongTexture, shooterTexture, raceTexture;
-    sf::RectangleShape homeBackground, pongBackground, shooterBackground, raceBackground;
+    sf::Texture homeTexture, pongTexture, spaceTexture[2], jungleTexture;
+    sf::RectangleShape homeBackground, pongBackground, spaceBackground[2], jungleBackground;
     // Sound effects
     sf::Sound sound;
     sf::SoundBuffer buffer;
@@ -34,14 +32,12 @@ private:
     Plane redPlane, bluePlane;
     sf::RectangleShape spaceRaceBoundry;
     Asteroid asteroid[40];
-    // Shooter and bullet
-    Shooter redShooter, blueShooter;
-    // Bullet redBullet, blueBullet;
 
     bool showHowToPlay = true;
     bool gameOver = false;
     std::string winner = "None";
-    int gameNumber = 0;//0=home, 1=pingpong, 2=space race, 3=jungle run 4=endPage
+    int gameNumber = 0; //0=home, 1=pingpong, 2=space race, 3=jungle run 4=result
+    enum gameName {HOME_INDEX, PING_PONG, SPACE_RACE, JUNGLE_RUN, RESULT_INDEX};
     int redFinalScore = 0, blueFinalScore = 0;
 
     float deltaTime;

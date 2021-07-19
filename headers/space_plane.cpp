@@ -1,6 +1,7 @@
 #include "space_plane.h"
-#include <iostream>
-#include <string>
+#include "global.h"
+
+int Plane::currentSpaceBackgroundIndex = 0;
 
 Plane::Plane() {
     player.setSize(sf::Vector2f(30, 60));
@@ -10,7 +11,7 @@ Plane::Plane() {
 }
 
 void Plane::setPlanePos(int xPos) {
-    player.setPosition(xPos, height-100);
+    player.setPosition(xPos, HEIGHT-100);
 }
 
 void Plane::move(int dir) {
@@ -34,6 +35,7 @@ void Plane::checkBoundry(int resetXPos, sf::Sound &sound) {
     if (y+50 < 0) {
         setPlanePos(resetXPos);
         score++;
+        currentSpaceBackgroundIndex = (currentSpaceBackgroundIndex == 0) ? 1 : 0;
         sound.play();
     }
 }

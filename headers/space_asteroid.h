@@ -11,11 +11,11 @@ class Asteroid {
     float speed = 0.5;
     sf::CircleShape asteroid;
 
-    public:
-        Asteroid();
-        void drawTo(sf::RenderWindow &window);
-        void move();
-        void checkBoundry();
-        void checkCollision(Plane &redPlane, Plane &bluePlane, sf::Sound &sound);
-        sf::Vector2f getRandomPosition();
+public:
+    Asteroid();
+    void drawTo(sf::RenderWindow &window);
+    void move();
+    void checkBoundry();
+    void checkCollision(Plane &redPlane, Plane &bluePlane, sf::Sound &sound);
+    sf::Vector2f getRandomPosition();
 };
