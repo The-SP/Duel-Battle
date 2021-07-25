@@ -2,6 +2,7 @@
 
 Game::Game() {
     window.create(sf::VideoMode(WIDTH, HEIGHT), "Duel: Multiplayer Battle", sf::Style::Titlebar | sf::Style::Close);
+    window.setPosition(sf::Vector2i(0, 0));
 
     //Home page
     homeBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -38,7 +39,7 @@ Game::Game() {
 
     // Jungle Run
     jungleBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
-    if (!jungleTexture.loadFromFile("./images/bg111.png"))
+    if (!jungleTexture.loadFromFile("./images/jungle/bg111.png"))
         throw("ERR, Failed to load image file");  
     jungleBackground.setTexture(&jungleTexture);
 
@@ -46,7 +47,7 @@ Game::Game() {
     setSound();
 
     // Text
-    if (!font.loadFromFile("arial.ttf"))
+    if (!font.loadFromFile("fonts/arial.ttf"))
         throw ("ERR, Failed to load font file");
     // home
     initText(title1, "DUEL Game Package", 75, 100);
@@ -106,6 +107,7 @@ void Game::setSound() {
 
 void Game::run() {
     sf::Clock clock;
+
     while (window.isOpen())
     {
         deltaTime = clock.restart().asSeconds();
@@ -262,7 +264,18 @@ void Game::spaceRace() {
 
 
 void Game::jungleRun() {
-    checkGameOver(2, 3);
+    jungle.update(deltaTime);
+    jungle.render(window);
+    if (jungle.bothPlayed) {
+        gameOver = true;
+        jungle.bothPlayed = false;
+        if (jungle.runnerScore[0] > jungle.runnerScore[1]) 
+            checkGameOver(3, 0); // red won
+        else if (jungle.runnerScore[0] < jungle.runnerScore[1])
+            checkGameOver(0, 3); // blue won
+    }
+    std::string strMessage = "Red: " + std::to_string(jungle.runnerScore[0]) + "   Blue: " + std::to_string(jungle.runnerScore[1]); 
+    scoreText.setString(strMessage);
 }
 
 

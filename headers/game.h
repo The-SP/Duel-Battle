@@ -8,6 +8,7 @@
 #include "pong_ball.h"
 #include "space_plane.h"
 #include "space_asteroid.h"
+#include "run_Jungle.h"
 #include "global.h"
 
 
@@ -32,6 +33,8 @@ private:
     Plane redPlane, bluePlane;
     sf::RectangleShape spaceRaceBoundry;
     Asteroid asteroid[40];
+    // Jungle Run
+    Jungle jungle;
 
     bool showHowToPlay = true;
     bool gameOver = false;
