@@ -12,20 +12,16 @@ Jungle::Jungle() {
     bg1.setTexture(&scrollingBG1);
     bg2.setTexture(&scrollingBG2);
 
-    if (!gameStateTexture[0].loadFromFile("images/jungle/red_turn.jpg") || !gameStateTexture[1].loadFromFile("images/jungle/blue_turn.jpg") || !gameStateTexture[2].loadFromFile("images/jungle/score_draw.jpg"))
-        throw("ERR, Failed to load image");
-    for (int i=0; i<3; i++) {
-        gameStateRect[i].setSize(sf::Vector2f(700, 400));
-        gameStateRect[i].setTexture(&gameStateTexture[i]);
-        gameStateRect[i].setPosition(WIDTH/2-gameStateRect[i].getSize().x/2, HEIGHT/2-150);
-        gameStateRect[i].setOutlineColor(sf::Color::White);
-        gameStateRect[i].setOutlineThickness(3.f);
-    }
+    std::string imageFile[3] = {"images/jungle/red_turn.jpg", "images/jungle/blue_turn.jpg", "images/jungle/score_draw.jpg"};
+    initTexture(gameStateRect[0], gameStateTexture[0], sf::Vector2f(700, 400), imageFile[0]);
+    initTexture(gameStateRect[1], gameStateTexture[1], sf::Vector2f(700, 400), imageFile[1]);
+    initTexture(gameStateRect[2], gameStateTexture[2], sf::Vector2f(700, 400), imageFile[2]);
+
 
     // Init Text
     if (!font.loadFromFile("fonts/pixel.ttf"))
         throw("Err, can't load font filel");
-    TextMessage::initText(font, jungleRunScoreText, "Red Score: 0", 50, 0);
+    InitUI::initText(jungleRunScoreText, "Red Score: 0", 50, 0);
 	jungleRunScoreText.setPosition(WIDTH-150, 0);
     jungleRunScoreText.setOutlineThickness(1);
     jungleRunScoreText.setOutlineColor(playerColor[RED_RUNNER]);
@@ -44,7 +40,7 @@ void Jungle::scrollBackground() {
 
 void Jungle::update(float deltaTime) {
     if (gameDraw) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
             gameDraw = false;
         }
         return;
@@ -93,7 +89,5 @@ void Jungle::resetJungleRun() {
     enemy.resetEnemy();
     player.resetPlayer();
     jungleRunScoreText.setOutlineColor(playerColor[playerTurnIndex]);
-    jungleRunScoreText.setString(playerTurnScoreText[playerTurnIndex] + std::to_string(player.score));
-    // jungleRunScoreText.setString(playerTurnScoreText[playerTurnIndex] + std::to_string(0));
+    jungleRunScoreText.setString(playerTurnScoreText[playerTurnIndex] + "0");
 }
-   

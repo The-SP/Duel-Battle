@@ -4,38 +4,38 @@
 int Plane::currentSpaceBackgroundIndex = 0;
 
 Plane::Plane() {
-    player.setSize(sf::Vector2f(30, 60));
+    plane.setSize(sf::Vector2f(30, 60));
     if (!playerTexture.loadFromFile("./images/plane.png")) 
         throw("ERR, failed to load image file");
-    player.setTexture(&playerTexture);
+    plane.setTexture(&playerTexture);
 }
 
-void Plane::setPlanePos(int xPos) {
-    player.setPosition(xPos, HEIGHT-100);
+void Plane::resetPlane(int xPos) {
+    plane.setPosition(xPos, HEIGHT-100);
 }
 
 void Plane::move(int dir) {
-    player.move(0, dir*speed);
+    plane.move(0, dir*speed);
 }
 
 void Plane::drawTo(sf::RenderWindow& window) {
-    window.draw(player);
-}
-
-int Plane::getY() {
-    return player.getPosition().y;
+    window.draw(plane);
 }
 
 sf::FloatRect Plane::globalBounds() {
-    return player.getGlobalBounds();
+    return plane.getGlobalBounds();
 }
 
 void Plane::checkBoundry(int resetXPos, sf::Sound &sound) {
-    int y = getY();
-    if (y+50 < 0) {
-        setPlanePos(resetXPos);
+    // Finish line
+    if (plane.getPosition().y+50 < 0) {
+        resetPlane(resetXPos);
         score++;
         currentSpaceBackgroundIndex = (currentSpaceBackgroundIndex == 0) ? 1 : 0;
         sound.play();
     }
+
+    // below starting line
+    if (plane.getPosition().y > HEIGHT-100)
+        resetPlane(resetXPos);
 }

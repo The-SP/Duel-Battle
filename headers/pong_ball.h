@@ -7,10 +7,15 @@ class Ball {
     float speedX=0.8, speedY=-0.8; // initial motion(right, down)
     int radius = 10;
     sf::CircleShape ball;
-    public:
-        Ball();
-        void moveBall();
-        void resetPosition();
-        void checkBoundry(Bat &red, Bat &blue, sf::Sound &sound);
-        void drawTo(sf::RenderWindow &window);
+
+    float totalTime = 0.f;
+
+public:
+    bool isMoving = false;
+    Ball();
+    void pauseBall(float deltaTime);
+    void moveBall();
+    void resetPosition();
+    void checkBoundry(Bat &red, Bat &blue, sf::Sound &sound);
+    void drawTo(sf::RenderWindow &window);
 };

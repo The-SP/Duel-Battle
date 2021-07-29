@@ -10,7 +10,13 @@ Game::Game() {
         throw("ERR, Failed to load image file");  
     homeBackground.setTexture(&homeTexture);
 
-    // Pong Bg
+    // Result
+    resultBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
+    if (!resutlTexture.loadFromFile("./images/result.jpg"))
+        throw("ERR, Failed to load image file");  
+    resultBackground.setTexture(&resutlTexture);
+
+    // Ping Pong Bg
     pongBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
     if (!pongTexture.loadFromFile("./images/pingpong.jpg"))
         throw("ERR, Failed to load image file");  
@@ -19,23 +25,20 @@ Game::Game() {
     redBat.setBat(sf::Color::Red, 18);
     blueBat.setBat(sf::Color::Blue, WIDTH-18);
 
-    //Race Bg
+    // Space Race Bg
     spaceBackground[0].setSize(sf::Vector2f(WIDTH, HEIGHT));
     spaceBackground[1].setSize(sf::Vector2f(WIDTH, HEIGHT));
-    if (!spaceTexture[0].loadFromFile("./images/space.jpg"))
-        throw("ERR, Failed to load image file");  
-    if (!spaceTexture[1].loadFromFile("./images/space1.jpg"))
-        throw("ERR, Failed to load image file");  
+    if (!spaceTexture[0].loadFromFile("./images/space.jpg") || !spaceTexture[1].loadFromFile("./images/space1.jpg"))
+        throw("ERR, Failed to load image file");   
     spaceBackground[0].setTexture(&spaceTexture[0]);
     spaceBackground[1].setTexture(&spaceTexture[1]);
     // Planes
-    redPlane.setPlanePos(WIDTH/2-100);
-    bluePlane.setPlanePos(WIDTH/2+100);
+    redPlane.resetPlane(WIDTH/2-100);
+    bluePlane.resetPlane(WIDTH/2+100);
     // Boundry
     spaceRaceBoundry.setSize(sf::Vector2f(5, 250));
     spaceRaceBoundry.setPosition(WIDTH/2-5, HEIGHT-250);
     spaceRaceBoundry.setFillColor(sf::Color::White);
-
 
     // Jungle Run
     jungleBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -52,43 +55,20 @@ Game::Game() {
     // home
     initText(title1, "DUEL Game Package", 75, 100);
     initText(title2, "Pong, Space Race and Jungle Run", 25, 175);
-    // game result page
-    std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
-    initText(scoreText, strMessage, 35, 15);
+    // score and winner
+    initText(scoreText, "Red: 0   Blue: 0", 35, 15);
+    winnerText.setOutlineThickness(5.f);
 
-    // How To Play
+    // How To Play Card
     initTexture(howToRect[1], howToTexture[1], sf::Vector2f(700, 400), "images/pongHowTo.jpg");
     initTexture(howToRect[2], howToTexture[2], sf::Vector2f(700, 400), "images/spaceHowTo.jpg");
     initTexture(howToRect[3], howToTexture[3], sf::Vector2f(700, 400), "images/jungleHowTo.jpg");
-    for (int i=1; i<4; i++) {
-        howToRect[i].setOutlineColor(sf::Color::White);
-        howToRect[i].setOutlineThickness(3.f);
-    }
 
     // Buttons 
     initTexture(playButton, buttonTexture[0], sf::Vector2f(100, 100), "images/redButton.png");
     if (!buttonTexture[1].loadFromFile("images/greenButton.png"))
         throw("ERR, Failed to load image file");  
     playButton.setPosition(WIDTH/2-playButton.getSize().x/2, HEIGHT-150);
-}
-
-void Game::initTexture(sf::RectangleShape& rect, sf::Texture& texture, const sf::Vector2f& size, const std::string& imageFile) {
-    rect.setSize(size);
-    if (!texture.loadFromFile(imageFile))
-        throw("ERR, Failed to load image file");  
-    rect.setTexture(&texture);
-    rect.setPosition(WIDTH/2-rect.getSize().x/2, HEIGHT/2-rect.getSize().y/2);   
-}
-
-
-void Game::initText(sf::Text& text, std::string strMessage, int characterSize, int positionY) {
-    text.setFont(font);
-    text.setString(strMessage);
-    text.setCharacterSize(characterSize); 
-    text.setOrigin(text.getLocalBounds().width/2, text.getLocalBounds().height/2);
-    text.setPosition(WIDTH/2, positionY);
-    text.setFillColor(sf::Color::White);
-    text.setStyle(sf::Text::Bold | sf::Text::Italic);
 }
 
 void Game::setSound() {
@@ -107,7 +87,6 @@ void Game::setSound() {
 
 void Game::run() {
     sf::Clock clock;
-
     while (window.isOpen())
     {
         deltaTime = clock.restart().asSeconds();
@@ -186,22 +165,13 @@ void Game::howToPlayPage(sf::RectangleShape& background) {
 }
 
 
-void Game::endPage() {
-    window.clear();
-    window.draw(homeBackground);
-    window.draw(scoreText);
-    window.draw(winnerText);
-    window.draw(playButton);
-    window.display();
-    if (isButtonSelected(playButton)) {
-        resetGame();
-    }
-}
-
-
 void Game::pingPong() {
-    ball.moveBall();
-    ball.checkBoundry(redBat, blueBat, sound);
+    if (ball.isMoving) {
+        ball.moveBall();
+        ball.checkBoundry(redBat, blueBat, sound);
+    } else { // ball is paused 
+        ball.pauseBall(deltaTime);
+    }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         redBat.moveBat(-1);
@@ -228,6 +198,7 @@ void Game::pingPong() {
     checkGameOver(redBat.score, blueBat.score);
 }
 
+
 void Game::spaceRace() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         redPlane.move(-1);
@@ -241,19 +212,20 @@ void Game::spaceRace() {
     redPlane.checkBoundry(WIDTH/2-100, sound); // starting X position is passed to reset 
     bluePlane.checkBoundry(WIDTH/2+100, sound);
 
+    std::string strMessage = "Red: " + std::to_string(redPlane.score) + "   Blue: " + std::to_string(bluePlane.score); 
+    scoreText.setString(strMessage);
+
     window.clear();
     window.draw(spaceBackground[Plane::currentSpaceBackgroundIndex]);
     window.draw(spaceRaceBoundry);
     redPlane.drawTo(window);
     bluePlane.drawTo(window);
     //Asteroids
-    for(int i=0; i<40; i++) {
+    for(int i=0; i<30; i++) {
         asteroid[i].move();
         asteroid[i].checkCollision(redPlane, bluePlane, sound);
         asteroid[i].drawTo(window);
     }
-    std::string strMessage = "Red: " + std::to_string(redPlane.score) + "   Blue: " + std::to_string(bluePlane.score); 
-    scoreText.setString(strMessage);
     window.draw(scoreText);
     window.display();
 
@@ -273,9 +245,12 @@ void Game::jungleRun() {
             checkGameOver(3, 0); // red won
         else if (jungle.runnerScore[0] < jungle.runnerScore[1])
             checkGameOver(0, 3); // blue won
+        std::string strMessage = "Red: " + std::to_string(jungle.runnerScore[0]) + "   Blue: " + std::to_string(jungle.runnerScore[1]); 
+        scoreText.setString(strMessage);
     }
-    std::string strMessage = "Red: " + std::to_string(jungle.runnerScore[0]) + "   Blue: " + std::to_string(jungle.runnerScore[1]); 
-    scoreText.setString(strMessage);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+        checkGameOver(3, 0); // game skip functionality
 }
 
 
@@ -309,12 +284,23 @@ void Game::resultPage(sf::RectangleShape &background) {
     window.display();
 }
 
+void Game::endPage() {
+    if (isButtonSelected(playButton))
+        resetGame();
+    window.clear();
+    window.draw(resultBackground);
+    window.draw(scoreText);
+    window.draw(winnerText);
+    window.draw(playButton);
+    window.display();
+}
+
 
 void Game::checkGameOver(int redScore, int blueScore)
 {
     if (redScore == 3) {
         redFinalScore++;
-        winner = "Red won!";
+        winner = "Red  won!";
         winnerText.setOutlineColor(sf::Color::Red);
     }
     if (blueScore == 3) {
@@ -325,7 +311,6 @@ void Game::checkGameOver(int redScore, int blueScore)
     if (winner != "None") {
         gameOver = true;
         initText(winnerText, winner, 70, 300);
-        winnerText.setOutlineThickness(5.f);
     }
 }
 
@@ -339,8 +324,10 @@ void Game::resetGame() {
     if (gameNumber == RESULT_INDEX) {  // final result page - 4
         if (redFinalScore > blueFinalScore) {
             winner = "Red won the series!";
+            winnerText.setOutlineColor(sf::Color::Red);       
         } else {
             winner = "Blue won the series!";
+            winnerText.setOutlineColor(sf::Color::Blue);
         }
         std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
         scoreText.setString(strMessage);
@@ -354,9 +341,13 @@ void Game::resetGame() {
         blueFinalScore = 0;
         redBat.score = 0;
         blueBat.score = 0;
-        // redShooter.score = 0;
-        // blueShooter.score = 0;
+        // reset Jungle runner score = 0
         redPlane.score = 0;
         bluePlane.score = 0;
+
+        // reset game objects position
+        ball.resetPosition();
+        redPlane.resetPlane(WIDTH/2-100);
+        bluePlane.resetPlane(WIDTH/2+100);
     }
 }

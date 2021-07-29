@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 
 class Plane {
-    sf::RectangleShape player;
+    sf::RectangleShape plane;
     sf::Texture playerTexture;
     float speed = 0.5;
 
@@ -13,9 +13,8 @@ public:
 public:
     int score = 0;
     Plane();
-    void setPlanePos(int xPos);
+    void resetPlane(int xPos);
     void move(int dir);
-    int getY();
     sf::FloatRect globalBounds();
     void checkBoundry(int resetXPos, sf::Sound &sound);
     void drawTo(sf::RenderWindow& window);

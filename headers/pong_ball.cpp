@@ -8,12 +8,21 @@ Ball::Ball() {
     ball.setPosition(WIDTH/2, HEIGHT/2);  //position of origin of ball(i.e centre of ball in this case)
 }
 
+void Ball::pauseBall(float deltaTime) {
+    totalTime += deltaTime;
+    if (totalTime >= 0.5f) {
+        totalTime = 0.f;
+        isMoving = true;
+    }
+}
+
 void Ball::moveBall() {
     ball.move(speedX, speedY);
 }
 
 void Ball::resetPosition() {
     ball.setPosition(WIDTH/2, HEIGHT/2);
+    isMoving = false;
 }
 
 void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
@@ -22,10 +31,8 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
         resetPosition();
         red.score++;
         speedX = -1; // reseting horizontal speed
-        // to create slightly random y motion after restart
-        speedY *= -1;
+        speedY *= -1; // to create slightly random y motion after restart
         sound.play();
-
     }
     if (ball.getPosition().x < 10)
     {
@@ -33,7 +40,6 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
         blue.score++;
         speedX = 1;
         sound.play();
-
     }
     // Vertical boundry
     if (ball.getPosition().y > HEIGHT - 10 || ball.getPosition().y < 10)

@@ -5,17 +5,18 @@
 #include "space_plane.h"
 
 class Asteroid {
-    const int width=1366, height=768; // direct assigning value instead of passing as argument when required . find a way to properly pass or globalize
     int radius = 10;
     int dir;
     float speed = 0.5;
     sf::CircleShape asteroid;
 
+private:
+    void checkBoundry();
+    sf::Vector2f getRandomPosition();
+
 public:
     Asteroid();
-    void drawTo(sf::RenderWindow &window);
     void move();
-    void checkBoundry();
     void checkCollision(Plane &redPlane, Plane &bluePlane, sf::Sound &sound);
-    sf::Vector2f getRandomPosition();
+    void drawTo(sf::RenderWindow &window);
 };

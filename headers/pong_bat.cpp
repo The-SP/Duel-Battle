@@ -13,8 +13,16 @@ void Bat::setBat(sf::Color colorName, int positionX) {
     bat.setFillColor(colorName);
 }
 
+void Bat::checkBoundry() {
+    if (bat.getPosition().y + bat.getSize().y/2 > HEIGHT)
+        bat.setPosition(bat.getPosition().x, HEIGHT-bat.getSize().y/2);
+    else if (bat.getPosition().y - bat.getSize().y/2 < 0)
+        bat.setPosition(bat.getPosition().x, bat.getSize().y/2);
+}
+
 void Bat::moveBat(int dir) {
     bat.move(0, dir*speed);
+    checkBoundry();
 }
 
 sf::FloatRect Bat::globalBounds() {

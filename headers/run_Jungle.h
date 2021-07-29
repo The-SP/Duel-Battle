@@ -1,12 +1,13 @@
 #include "run_player.h"
 #include "run_enemy.h"
-#include "text.h"
+#include "initUI.h"
 #include <iostream>
 
-class Jungle {
+class Jungle : private InitUI {
     Player player;
     Enemy enemy;
-    TextMessage text;
+    InitUI text;
+    sf::Text jungleRunScoreText;
 
     float bgX, bgX2; // 0 and WIDTH
     sf::Texture scrollingBG1, scrollingBG2;
@@ -18,9 +19,6 @@ class Jungle {
     int playerTurnIndex = 0;
     std::string playerTurnScoreText[2] = {"Red Score: ", "Blue Score: "};
     sf::Color playerColor[2] = {sf::Color::Red, sf::Color::Blue};
-
-    sf::Font font;
-    sf::Text jungleRunScoreText;
 
     bool gameDraw = false;
 
