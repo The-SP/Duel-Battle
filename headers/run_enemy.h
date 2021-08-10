@@ -26,12 +26,15 @@ public:
 class Cactus: public RectEntity {
 	float speed;
 	sf::FloatRect globalBounds();
+	sf::Texture fireTexture;
+	bool isCactus = true;
 public:
 	// bool isOutOfScreen = false;
 	Cactus();
 	void update(Player& player);
 	void resetCactus();
 };
+
 
 class Spike: public RectEntity {
 	float speed;

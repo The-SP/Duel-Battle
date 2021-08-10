@@ -13,10 +13,10 @@
 #include "global.h"
 
 
-class Game : public InitUI {
+class Game : private InitUI {
 private:
     sf::RenderWindow window;
-    float deltaTime;
+    float deltaTime, totalTime = 0,f;
 
     // Text
     sf::Text title1, title2, scoreText, winnerText;
@@ -24,8 +24,8 @@ private:
     sf::Texture homeTexture, pongTexture, spaceTexture[2], jungleTexture, resutlTexture;
     sf::RectangleShape homeBackground, pongBackground, spaceBackground[2], jungleBackground, resultBackground;
     // Sound effects
-    sf::Sound sound;
-    sf::SoundBuffer buffer;
+    sf::Sound sound, pongSound, raceSound;
+    sf::SoundBuffer buffer, pongBuffer, raceBuffer;
     sf::Music music;
 
     // PingPong
@@ -34,7 +34,9 @@ private:
     // Space Race
     Plane redPlane, bluePlane;
     sf::RectangleShape spaceRaceBoundry;
-    Asteroid asteroid[30];
+    Asteroid asteroid[25];
+    int asteroidSize = 25;
+    sf::Texture asteroidTexture[3];
     // Jungle Run
     Jungle jungle;
 
@@ -58,6 +60,7 @@ private:
     void setSound();
     // Menu
     bool isButtonSelected(sf::RectangleShape& button);
+    void textBlink(sf::Text& text, float deltaTime, float switchTime = 0.2f);
 
     // Pages
     void homePage();

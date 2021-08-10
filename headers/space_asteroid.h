@@ -5,7 +5,6 @@
 #include "space_plane.h"
 
 class Asteroid {
-    int radius = 10;
     int dir;
     float speed = 0.5;
     sf::CircleShape asteroid;
@@ -16,6 +15,7 @@ private:
 
 public:
     Asteroid();
+    void initTexture(const sf::Texture& texture);
     void move();
     void checkCollision(Plane &redPlane, Plane &bluePlane, sf::Sound &sound);
     void drawTo(sf::RenderWindow &window);

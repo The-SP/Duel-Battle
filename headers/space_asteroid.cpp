@@ -6,9 +6,13 @@ Asteroid::Asteroid() {
         dir = 1; // asteroid moves right
     else    
          dir = -1; // moves left
-    asteroid.setRadius(radius);
+    asteroid.setRadius(10+rand()%5);
     asteroid.setPosition(getRandomPosition()); 
     asteroid.setFillColor(sf::Color::White);
+}
+
+void Asteroid::initTexture(const sf::Texture& texture) {
+    asteroid.setTexture(&texture);
 }
 
 sf::Vector2f Asteroid::getRandomPosition() {
@@ -23,6 +27,7 @@ void Asteroid::drawTo(sf::RenderWindow &window) {
 
 void Asteroid::move() {
     asteroid.move(dir*speed, 0);
+    asteroid.rotate(dir*0.1f); // rotation effect while moving
     checkBoundry();
 }
 

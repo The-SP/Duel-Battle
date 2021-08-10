@@ -32,6 +32,11 @@ Game::Game() {
         throw("ERR, Failed to load image file");   
     spaceBackground[0].setTexture(&spaceTexture[0]);
     spaceBackground[1].setTexture(&spaceTexture[1]);
+    // Asteroid texture
+    if (!asteroidTexture[0].loadFromFile("images/asteroid1.png") || !asteroidTexture[1].loadFromFile("images/asteroid2.png") || !asteroidTexture[2].loadFromFile("images/asteroid3.png"))
+        throw("ERR, Failed to load image file");  
+    for (int i=0; i<asteroidSize; i++)
+        asteroid[i].initTexture(asteroidTexture[rand()%3]);
     // Planes
     redPlane.resetPlane(WIDTH/2-100);
     bluePlane.resetPlane(WIDTH/2+100);
@@ -54,6 +59,7 @@ Game::Game() {
         throw ("ERR, Failed to load font file");
     // home
     initText(title1, "DUEL Game Package", 75, 100);
+    title1.setOutlineThickness(4.f);
     initText(title2, "Pong, Space Race and Jungle Run", 25, 175);
     // score and winner
     initText(scoreText, "Red: 0   Blue: 0", 35, 15);
@@ -72,9 +78,11 @@ Game::Game() {
 }
 
 void Game::setSound() {
-    if (!buffer.loadFromFile("./sound/punch.wav"))
+    if (!buffer.loadFromFile("./sound/punch.wav") | !pongBuffer.loadFromFile("./sound/pong.wav") | !raceBuffer.loadFromFile("sound/race.ogg"))
         throw("ERR, cant load sound");
     sound.setBuffer(buffer);
+    pongSound.setBuffer(pongBuffer);
+    raceSound.setBuffer(raceBuffer);
     // Background Music
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
@@ -143,6 +151,7 @@ void Game::run() {
 
 
 void  Game::homePage() {
+    textBlink(title1, deltaTime);
     window.clear();
     window.draw(homeBackground);
     window.draw(title1);
@@ -168,7 +177,7 @@ void Game::howToPlayPage(sf::RectangleShape& background) {
 void Game::pingPong() {
     if (ball.isMoving) {
         ball.moveBall();
-        ball.checkBoundry(redBat, blueBat, sound);
+        ball.checkBoundry(redBat, blueBat, pongSound);
     } else { // ball is paused 
         ball.pauseBall(deltaTime);
     }
@@ -209,8 +218,8 @@ void Game::spaceRace() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
         bluePlane.move(1);
 
-    redPlane.checkBoundry(WIDTH/2-100, sound); // starting X position is passed to reset 
-    bluePlane.checkBoundry(WIDTH/2+100, sound);
+    redPlane.checkBoundry(WIDTH/2-100, raceSound); // starting X position is passed to reset 
+    bluePlane.checkBoundry(WIDTH/2+100, raceSound);
 
     std::string strMessage = "Red: " + std::to_string(redPlane.score) + "   Blue: " + std::to_string(bluePlane.score); 
     scoreText.setString(strMessage);
@@ -221,7 +230,7 @@ void Game::spaceRace() {
     redPlane.drawTo(window);
     bluePlane.drawTo(window);
     //Asteroids
-    for(int i=0; i<30; i++) {
+    for(int i=0; i<asteroidSize; i++) {
         asteroid[i].move();
         asteroid[i].checkCollision(redPlane, bluePlane, sound);
         asteroid[i].drawTo(window);
@@ -249,8 +258,20 @@ void Game::jungleRun() {
         scoreText.setString(strMessage);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
         checkGameOver(3, 0); // game skip functionality
+        jungle.playerTurnIndex = 0; // red turn
+        jungle.resetJungleRun();
+    }
+}
+
+void Game::textBlink(sf::Text& text, float deltaTime, float switchTime)
+{
+	totalTime += deltaTime;
+	if (totalTime >= switchTime) {
+		totalTime -= switchTime;
+		text.setOutlineColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1));
+	}
 }
 
 

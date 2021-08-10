@@ -16,15 +16,15 @@ class Jungle : private InitUI {
     sf::RectangleShape gameStateRect[3];
 
     enum playerTurn {RED_RUNNER, BLUE_RUNNER};
-    int playerTurnIndex = 0;
     std::string playerTurnScoreText[2] = {"Red Score: ", "Blue Score: "};
     sf::Color playerColor[2] = {sf::Color::Red, sf::Color::Blue};
 
     bool gameDraw = false;
 
 public:
-    bool bothPlayed = false;
+    int playerTurnIndex = 0;
     int runnerScore[2] = {0};
+    bool bothPlayed = false;
 
 private:
     void scrollBackground();

@@ -132,11 +132,8 @@ Cactus::Cactus(): speed(SCROLL_SPEED) {
 
 void Cactus::update(Player& player) {
 	shape.move(speed, 0);
-	if (shape.getPosition().x < -objectWidth) {
+	if (shape.getPosition().x < -objectWidth)
 		shape.setPosition(WIDTH*1.5f, shape.getPosition().y);
-		// isOutOfScreen = true;
-	}
-
 	// CHECK COLLISION
 	if (shape.getGlobalBounds().intersects(player.globalBounds())) {
 		player.kill();
