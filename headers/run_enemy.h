@@ -1,12 +1,12 @@
 #pragma once
-#include<SFML/Graphics.hpp>
 #include "entity.h"
 #include "run_player.h"
 
 
-class Bird: public SpriteEntity, public AnimationEntity
-{
+class Bird: public SpriteEntity, public AnimationEntity {
 	float speedY = 0;
+	sf::Sound starHitSound;
+	sf::SoundBuffer starHitBuffer;
 public:
 	Bird();
 	void update(float deltaTime, Player& player);
@@ -16,7 +16,6 @@ public:
 
 class Saw: public SpriteEntity, public AnimationEntity {
 public:
-	// bool isOutOfScreen = false;
 	Saw();
 	void update(float deltaTime, Player& player);
 	void resetSaw();
@@ -29,7 +28,6 @@ class Cactus: public RectEntity {
 	sf::Texture fireTexture;
 	bool isCactus = true;
 public:
-	// bool isOutOfScreen = false;
 	Cactus();
 	void update(Player& player);
 	void resetCactus();

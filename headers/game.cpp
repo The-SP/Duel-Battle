@@ -52,8 +52,7 @@ Game::Game() {
     jungleBackground.setTexture(&jungleTexture);
 
     // Sound
-    setSound();
-
+    initSound();
     // Text
     if (!font.loadFromFile("fonts/arial.ttf"))
         throw ("ERR, Failed to load font file");
@@ -77,12 +76,18 @@ Game::Game() {
     playButton.setPosition(WIDTH/2-playButton.getSize().x/2, HEIGHT-150);
 }
 
-void Game::setSound() {
-    if (!buffer.loadFromFile("./sound/punch.wav") | !pongBuffer.loadFromFile("./sound/pong.wav") | !raceBuffer.loadFromFile("sound/race.ogg"))
+void Game::initSound() {
+    if (
+        !buffer.loadFromFile("./sound/punch.wav") |
+        !pongBuffer.loadFromFile("./sound/pong.wav") |
+        !raceBuffer.loadFromFile("sound/race.ogg") |
+        !cheerBuffer.loadFromFile("./sound/Cheer.wav")
+      )
         throw("ERR, cant load sound");
     sound.setBuffer(buffer);
     pongSound.setBuffer(pongBuffer);
     raceSound.setBuffer(raceBuffer);
+    cheerSound.setBuffer(cheerBuffer);
     // Background Music
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
@@ -178,7 +183,7 @@ void Game::pingPong() {
     if (ball.isMoving) {
         ball.moveBall();
         ball.checkBoundry(redBat, blueBat, pongSound);
-    } else { // ball is paused 
+    } else { // ball is paused for little time before serve
         ball.pauseBall(deltaTime);
     }
 
@@ -202,7 +207,7 @@ void Game::pingPong() {
     window.draw(scoreText);
     window.display();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) // Game Skip option
         blueBat.score = 3;
     checkGameOver(redBat.score, blueBat.score);
 }
@@ -238,7 +243,7 @@ void Game::spaceRace() {
     window.draw(scoreText);
     window.display();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) // Game Skip option
         redPlane.score = 3;
     checkGameOver(redPlane.score, bluePlane.score);
 }
@@ -258,8 +263,8 @@ void Game::jungleRun() {
         scoreText.setString(strMessage);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
-        checkGameOver(3, 0); // game skip functionality
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) { // game skip functionality
+        checkGameOver(3, 0);
         jungle.playerTurnIndex = 0; // red turn
         jungle.resetJungleRun();
     }
@@ -342,7 +347,7 @@ void Game::resetGame() {
     winner = "None";
     gameNumber++; // change game
 
-    if (gameNumber == RESULT_INDEX) {  // final result page - 4
+    if (gameNumber == RESULT_INDEX) {  // final result page => 4
         if (redFinalScore > blueFinalScore) {
             winner = "Red won the series!";
             winnerText.setOutlineColor(sf::Color::Red);       
@@ -353,9 +358,10 @@ void Game::resetGame() {
         std::string strMessage = "Red: " + std::to_string(redFinalScore) + "   Blue: " + std::to_string(blueFinalScore); 
         scoreText.setString(strMessage);
         initText(winnerText, winner, 50, 100);
+        cheerSound.play();
     }
 
-    if (gameNumber == RESULT_INDEX + 1) { // reset after end page - 5
+    if (gameNumber == RESULT_INDEX + 1) { // reset after end page => 5
         gameNumber = HOME_INDEX; //0
         // reseting all scores
         redFinalScore = 0;

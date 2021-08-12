@@ -1,6 +1,5 @@
 #include "run_player.h"
 #include "run_enemy.h"
-#include "initUI.h"
 #include <iostream>
 
 class Jungle : private InitUI {
@@ -18,7 +17,6 @@ class Jungle : private InitUI {
     enum playerTurn {RED_RUNNER, BLUE_RUNNER};
     std::string playerTurnScoreText[2] = {"Red Score: ", "Blue Score: "};
     sf::Color playerColor[2] = {sf::Color::Red, sf::Color::Blue};
-
     bool gameDraw = false;
 
 public:

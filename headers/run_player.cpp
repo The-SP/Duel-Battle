@@ -1,8 +1,6 @@
 #include "run_player.h"
 #include "global.h"
 
-// float distanceTravelled = 0.f;
-
 Player::Player() {
 	if (!texture.loadFromFile("images/jungle/runner.png"))
 		throw("ERR, couldn't load image");
@@ -15,6 +13,14 @@ Player::Player() {
     sprite.setTextureRect(uvRect);
     sprite.setScale(sf::Vector2f(0.4f, 0.4f));
     resetPosition();
+
+    if (
+        !jumpBuffer.loadFromFile("sound/jump.wav") |
+        !deathBuffer.loadFromFile("sound/death.wav")
+    )
+        throw("ERR, can't load music");
+    jumpSound.setBuffer(jumpBuffer);
+    deathSound.setBuffer(deathBuffer);
 }
 
 void Player::resetPosition() {
@@ -35,6 +41,7 @@ void Player::update(float deltaTime) {
 
     // start jumping
     if (!isJumping && !isSliding && !isDead && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+        jumpSound.play();
         isJumping = true;
         totalTime = 0;
         imageNo = 0;
@@ -43,11 +50,11 @@ void Player::update(float deltaTime) {
 
     // start sliding
     if (!isSliding && !isJumping && !isDead && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+        jumpSound.play();
         isSliding = true;
         totalTime = 0;
         imageNo = 0;
         rowNo = 4;
-        // sprite.setScale(0.3, 0.3);
         sprite.move(0, 35);
     }
 
@@ -111,16 +118,6 @@ void Player::jump() {
         sprite.setTextureRect(uvRect);
     }
     sprite.move(0, (imageNo - 5) * 0.3f);
-    // // checking only
-    // float heightJumped = HEIGHT - sprite.getPosition().y;
-    // if (imageNo == 5) std::cout << "HT Y = " << heightJumped << '\t'; 
-    // // // ans = 400
-    // distanceTravelled += -SCROLL_SPEED;
-    // if (imageNo == 9 && distanceTravelled > 50) {
-    //     std::cout << "Dist X = " << distanceTravelled << '\t';
-    //     distanceTravelled = 0;
-    // }
-    // // ans = 320 to 350
 }
 
 void Player::slide() {
@@ -136,7 +133,6 @@ void Player::slide() {
         sprite.setTextureRect(uvRect);
     }
 }
-
 
 void Player::dead() {
     if (totalTime >= switchTime.dead) {
@@ -157,22 +153,22 @@ void Player::kill()
     // change variables to allow dead animation 
     // (this is to be done only once) as this function is called everytime after death
     if (!isDead) {
+        deathSound.play();
         isJumping = false;
         totalTime = 0;
         rowNo = 1;
         imageNo = 0;
         resetPosition();
     } 
-    // dead status so above if block doesn't run next time 
+    // make dead true so that above if block doesn't run next time 
     // also dead animation runs now in player->update
     isDead = true;
-
 }
 
 sf::FloatRect Player::globalBounds()
 {
     sf::FloatRect globalRect = sprite.getGlobalBounds();
-    globalRect.width -= 25.f; // to make easier
+    globalRect.width -= 25.f; // to make easier and avoid empty boundry area collision
     globalRect.height -= 10.f;
     return globalRect;
 }
@@ -183,6 +179,7 @@ void Player::resetPlayer() {
     isIdle = true;
     resetPosition();
     star.setPos(sf::Vector2f(0, 0));
+    star.setSpeed(0.9f);
     star.isShooting = false;
     score = 0;
 }
@@ -203,6 +200,10 @@ Star::Star() {
 
 void Star::setPos(sf::Vector2f pos) {
     sprite.setPosition(pos);
+}
+
+void Star::setSpeed(float velocity) {
+    speed = velocity;
 }
 
 void Star::update(float deltaTime) {

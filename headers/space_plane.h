@@ -4,7 +4,7 @@
 
 class Plane {
     sf::RectangleShape plane;
-    sf::Texture playerTexture;
+    sf::Texture planeTexture;
     float speed = 0.5;
 
 public:

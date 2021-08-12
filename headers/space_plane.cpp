@@ -5,9 +5,9 @@ int Plane::currentSpaceBackgroundIndex = 0;
 
 Plane::Plane() {
     plane.setSize(sf::Vector2f(30, 60));
-    if (!playerTexture.loadFromFile("./images/plane.png")) 
+    if (!planeTexture.loadFromFile("./images/plane.png")) 
         throw("ERR, failed to load image file");
-    plane.setTexture(&playerTexture);
+    plane.setTexture(&planeTexture);
 }
 
 void Plane::resetPlane(int xPos) {

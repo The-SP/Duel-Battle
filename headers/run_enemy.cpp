@@ -16,6 +16,10 @@ Bird::Bird()
 	uvRect = sf::IntRect(0, 0, objectWidth, objectHeight);
 	sprite.setTextureRect(uvRect);
 	sprite.setPosition(WIDTH*2, HEIGHT-200);
+
+    if (!starHitBuffer.loadFromFile("sound/star_throw.wav"))
+        throw("ERR, can't load music");
+    starHitSound.setBuffer(starHitBuffer);
 }
 
 void Bird::update(float deltaTime, Player& player) {
@@ -31,39 +35,39 @@ void Bird::update(float deltaTime, Player& player) {
 	}
 	
 	sprite.move(speed, speedY);
+	// bird out of screen
 	if (sprite.getPosition().x < -50) {
+		if (speedY != 0) { // reset star status if bird is dead and out of screen
+			player.star.isShooting = false;
+			player.star.setSpeed(0.9f);		
+		}
 		resetBird();
 	}
-	if (sprite.getPosition().y > HEIGHT-100) {
-			speedY = 0;
+	// dead bird falls on ground
+	if (speedY != 0 && sprite.getPosition().y > HEIGHT-100) {
+		speedY = 0;
+		// when dead bird falls on ground allow player to shoot again
+		player.star.isShooting = false;
+		player.star.setSpeed(0.9f);
 	}
 
 	// CHECK COLLISION (rowNo = 0 means bird is alive and can kill player)
 	if (rowNo == 0 && sprite.getGlobalBounds().intersects(player.globalBounds())) {
-		// kill bird if land on top
-		if (player.globalBounds().left > sprite.getPosition().x/2 && player.globalBounds().top+player.globalBounds().height >= sprite.getPosition().x) {
-			player.score++;
-			// start dead animation
-			rowNo = 1;
-			speed = SCROLL_SPEED;
-			speedY = 0.3f;
-			player.star.setPos(sf::Vector2f(0, 0));
-			player.star.isShooting = false;			
-		} else {
-			player.kill();
-			speed = 0.f;
-		}
+		player.kill();
+		speed = 0.f;
 	}
 
 	// bird kill
 	if (sprite.getGlobalBounds().intersects(player.star.globalBounds())) {
+		starHitSound.play();
 		player.score++;
-		// start dead animation
+		// start bird dead animation
 		rowNo = 1;
 		speed = SCROLL_SPEED;
 		speedY = 0.3f;
-		player.star.setPos(sf::Vector2f(0, 0));
-		player.star.isShooting = false;
+		// set star speed to 0 after killing bird and allow to throw star only after dead bird falls on ground
+		player.star.setPos(sf::Vector2f(0, 0)); 
+		player.star.setSpeed(0.f);
 	}
 }
 
@@ -83,7 +87,7 @@ Saw::Saw()
 	if (!texture.loadFromFile("images/jungle/SAW.png"))
 		throw("err, cant load image");
 	sprite.setTexture(texture);
-	sprite.setScale(0.9f, 0.9f);
+	// sprite.setScale(0.9f, 0.9f); // default scale 1.f
 	sprite.setPosition(WIDTH, HEIGHT - 135);
 	objectWidth = texture.getSize().x/4;
 	uvRect = sf::IntRect(0, 0, objectWidth, texture.getSize().y);
