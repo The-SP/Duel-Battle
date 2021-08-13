@@ -10,7 +10,7 @@ Ball::Ball() {
 
 void Ball::pauseBall(float deltaTime) {
     totalTime += deltaTime;
-    if (totalTime >= 0.5f) {
+    if (totalTime >= 0.8f) {
         totalTime = 0.f;
         isMoving = true;
     }
@@ -30,7 +30,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     { // here -10 is done becz origin of ball at (10, 10)
         resetPosition();
         red.score++;
-        speedX = -1; // reseting horizontal speed
+        speedX = -1*10; // reseting horizontal speed
         speedY *= -1; // to create slightly random y motion after restart
         sound.play();
     }
@@ -38,7 +38,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     {
         resetPosition();
         blue.score++;
-        speedX = 1;
+        speedX = 1*10;
         sound.play();
     }
     // Vertical boundry

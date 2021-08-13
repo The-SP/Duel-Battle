@@ -3,7 +3,7 @@
 
 
 class Bat {
-    float speed = 0.8;
+    float speed = 0.8*10;
     sf::RectangleShape bat;
     void checkBoundry();
 

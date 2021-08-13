@@ -4,7 +4,7 @@
 #include "pong_bat.h"
 
 class Ball {
-    float speedX=0.8, speedY=-0.8; // initial motion(right, down)
+    float speedX=0.8*10, speedY=-0.8*10; // initial motion(right, down)
     int radius = 10;
     sf::CircleShape ball;
 

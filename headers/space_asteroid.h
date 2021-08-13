@@ -6,7 +6,7 @@
 
 class Asteroid {
     int dir;
-    float speed = 0.5;
+    float speed = 0.5*7;
     sf::CircleShape asteroid;
 
 private:

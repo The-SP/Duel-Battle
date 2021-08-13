@@ -117,7 +117,7 @@ void Player::jump() {
         uvRect.top = rowNo * playerHeight;
         sprite.setTextureRect(uvRect);
     }
-    sprite.move(0, (imageNo - 5) * 0.3f);
+    sprite.move(0, (imageNo - 5) * 1.7f);
 }
 
 void Player::slide() {
@@ -179,15 +179,15 @@ void Player::resetPlayer() {
     isIdle = true;
     resetPosition();
     star.setPos(sf::Vector2f(0, 0));
-    star.setSpeed(0.9f);
+    star.setSpeed(0.8f*10);
     star.isShooting = false;
     score = 0;
 }
 
 
 Star::Star() {
-    this->speed = 0.9f;
-    this->switchTime = 0.1f;
+    this->speed = 0.8f*10;
+    this->switchTime = 0.12f;
 
 	if (!texture.loadFromFile("images/jungle/stars.png"))
 		throw("err, cant load image");

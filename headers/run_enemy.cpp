@@ -3,8 +3,8 @@
 
 Bird::Bird()
 {
-	this->speed = 2.5*SCROLL_SPEED;
-	this->switchTime = 0.15f;
+	this->speed = 3*SCROLL_SPEED;
+	this->switchTime = 0.2f;
 
 	if (!texture.loadFromFile("images/jungle/birds.png"))
 		throw("err, cant load image");
@@ -39,7 +39,7 @@ void Bird::update(float deltaTime, Player& player) {
 	if (sprite.getPosition().x < -50) {
 		if (speedY != 0) { // reset star status if bird is dead and out of screen
 			player.star.isShooting = false;
-			player.star.setSpeed(0.9f);		
+			player.star.setSpeed(0.8f*10);		
 		}
 		resetBird();
 	}
@@ -48,7 +48,7 @@ void Bird::update(float deltaTime, Player& player) {
 		speedY = 0;
 		// when dead bird falls on ground allow player to shoot again
 		player.star.isShooting = false;
-		player.star.setSpeed(0.9f);
+		player.star.setSpeed(0.8f*10);
 	}
 
 	// CHECK COLLISION (rowNo = 0 means bird is alive and can kill player)
@@ -64,7 +64,7 @@ void Bird::update(float deltaTime, Player& player) {
 		// start bird dead animation
 		rowNo = 1;
 		speed = SCROLL_SPEED;
-		speedY = 0.3f;
+		speedY = 1.f;
 		// set star speed to 0 after killing bird and allow to throw star only after dead bird falls on ground
 		player.star.setPos(sf::Vector2f(0, 0)); 
 		player.star.setSpeed(0.f);
@@ -107,7 +107,6 @@ void Saw::update(float deltaTime, Player& player) {
 	
 	sprite.move(speed, 0);
 	if (sprite.getPosition().x < -objectWidth) {
-		// isOutOfScreen = true;
 		sprite.setPosition(WIDTH*1.5f, sprite.getPosition().y);
 	}
 
@@ -206,4 +205,3 @@ void Enemy::drawTo(sf::RenderWindow& window) {
 	spike.drawTo(window);
 	// window.draw(spike.hitBox);
 }
-

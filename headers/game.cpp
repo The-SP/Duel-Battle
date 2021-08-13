@@ -3,6 +3,7 @@
 Game::Game() {
     window.create(sf::VideoMode(WIDTH, HEIGHT), "Duel: Multiplayer Battle", sf::Style::Titlebar | sf::Style::Close);
     window.setPosition(sf::Vector2i(0, 0));
+    window.setFramerateLimit(60);
 
     //Home page
     homeBackground.setSize(sf::Vector2f(WIDTH, HEIGHT));
@@ -92,9 +93,10 @@ void Game::initSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(10);
+    music.setVolume(1);
     music.setLoop(true);
     sound.setVolume(25);
+    cheerSound.setVolume(25);
 }
 
 

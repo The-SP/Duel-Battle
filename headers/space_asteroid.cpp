@@ -26,7 +26,7 @@ void Asteroid::drawTo(sf::RenderWindow &window) {
 
 void Asteroid::move() {
     asteroid.move(dir*speed, 0);
-    asteroid.rotate(dir*0.15f); // rotation effect while moving
+    asteroid.rotate(dir*0.5f); // rotation effect while moving
     checkBoundry();
 }
 

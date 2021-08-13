@@ -5,7 +5,7 @@
 class Plane {
     sf::RectangleShape plane;
     sf::Texture planeTexture;
-    float speed = 0.5;
+    float speed = 0.5*6;
 
 public:
     static int currentSpaceBackgroundIndex;

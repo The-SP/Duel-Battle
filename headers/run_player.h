@@ -16,6 +16,7 @@ public:
 	sf::FloatRect globalBounds();
 };
 
+
 class Player: public SpriteEntity {
 private:
 	sf::IntRect uvRect;
@@ -23,7 +24,7 @@ private:
 	int imageNo = 0, rowNo = 0; // (Idle-0, Dead-1, Jump-2, Run-3, Slide-4)
 	
 	struct switchTimes{
-		float run = 0.05f, jump = 0.1f, dead = 0.5f, idle = 0.03f, slide = 0.08f;
+		float run = 0.04f, jump = 0.1f, dead = 0.4f, idle = 0.025f, slide = 0.07f;
 	}switchTime;
 	float totalTime = 0.0f;
 	float deltaTime = 0.f;
