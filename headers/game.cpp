@@ -42,8 +42,8 @@ Game::Game() {
     redPlane.resetPlane(WIDTH/2-100);
     bluePlane.resetPlane(WIDTH/2+100);
     // Boundry
-    spaceRaceBoundry.setSize(sf::Vector2f(5, 250));
-    spaceRaceBoundry.setPosition(WIDTH/2-5, HEIGHT-250);
+    spaceRaceBoundry.setSize(sf::Vector2f(4, 250));
+    spaceRaceBoundry.setPosition(WIDTH/2-2, HEIGHT-250);
     spaceRaceBoundry.setFillColor(sf::Color::White);
 
     // Jungle Run
@@ -55,14 +55,16 @@ Game::Game() {
     // Sound
     initSound();
     // Text
-    if (!font.loadFromFile("fonts/arial.ttf"))
+    if (!font.loadFromFile("fonts/arial.ttf") || !scoreFont.loadFromFile("fonts/Hermes-Regular.ttf"))
         throw ("ERR, Failed to load font file");
     // home
     initText(title1, "DUEL Game Package", 75, 100);
     title1.setOutlineThickness(4.f);
-    initText(title2, "Pong, Space Race and Jungle Run", 25, 175);
+    initText(title2, "Ping Pong, Space Race and Jungle Run", 25, 175);
     // score and winner
-    initText(scoreText, "Red: 0   Blue: 0", 35, 15);
+    initText(scoreText, "Red: 0   Blue: 0", 40, 15);
+    scoreText.setFont(scoreFont);
+    scoreText.setStyle(sf::Text::Regular);
     winnerText.setOutlineThickness(5.f);
 
     // How To Play Card
@@ -79,9 +81,9 @@ Game::Game() {
 
 void Game::initSound() {
     if (
-        !buffer.loadFromFile("./sound/punch.wav") |
-        !pongBuffer.loadFromFile("./sound/pong.wav") |
-        !raceBuffer.loadFromFile("sound/race.ogg") |
+        !buffer.loadFromFile("./sound/punch.wav") ||
+        !pongBuffer.loadFromFile("./sound/pong.wav") ||
+        !raceBuffer.loadFromFile("sound/race.ogg") ||
         !cheerBuffer.loadFromFile("./sound/Cheer.wav")
       )
         throw("ERR, cant load sound");
@@ -93,10 +95,10 @@ void Game::initSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(1);
+    music.setVolume(10);
     music.setLoop(true);
     sound.setVolume(25);
-    cheerSound.setVolume(25);
+    cheerSound.setVolume(35);
 }
 
 

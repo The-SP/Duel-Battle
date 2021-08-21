@@ -3,7 +3,7 @@
 
 Bird::Bird()
 {
-	this->speed = 3*SCROLL_SPEED;
+	this->speed = 2.5f*SCROLL_SPEED;
 	this->switchTime = 0.2f;
 
 	if (!texture.loadFromFile("images/jungle/birds.png"))
@@ -74,8 +74,8 @@ void Bird::update(float deltaTime, Player& player) {
 void Bird::resetBird() {
 	speedY = 0;
 	rowNo = 0;
-	sprite.setPosition(WIDTH * 2.5f + rand()%WIDTH, HEIGHT-200);
-	speed = 2*SCROLL_SPEED - (rand() % 100) * 0.02f;	
+	sprite.setPosition(WIDTH * 2.f + rand()%WIDTH, HEIGHT-200);
+	speed = 2*SCROLL_SPEED - (rand() % 8); // -rand() done becz SCROLL_SPEED is -ve and bird moves left
 }
 
 

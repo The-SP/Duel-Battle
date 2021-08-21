@@ -49,7 +49,7 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     }
 
     // CHECK COLLISION WITH BAT
-    /* Note: 
+    /*
     here ball.setPosition(50, ballPos.y) done becz 
     if collide and speedX*=-1 done then still the condition is satisfied immediately and 
     it gives continuous loop (ball slides along the bat or ball freezes) (weird error for some cases)
@@ -58,12 +58,12 @@ void Ball::checkBoundry(Bat& red, Bat& blue, sf::Sound &sound) {
     */
     if (ball.getGlobalBounds().intersects(red.globalBounds())) { 
         ball.setPosition(50, ball.getPosition().y);
-        speedX *= -1.08; // to increase horizontal speed after each collision
+        speedX *= -1.085; // to increase horizontal speed after each collision
         sound.play();
     }
     if (ball.getGlobalBounds().intersects(blue.globalBounds())) {
         ball.setPosition(WIDTH-50, ball.getPosition().y);
-        speedX *= -1.08;
+        speedX *= -1.085;
         sound.play();
     }
 }

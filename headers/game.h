@@ -18,6 +18,7 @@ private:
     float deltaTime, totalTime = 0.f;
 
     // Text
+    sf::Font scoreFont;
     sf::Text title1, title2, scoreText, winnerText;
     // Background
     sf::Texture homeTexture, pongTexture, spaceTexture[2], jungleTexture, resutlTexture;

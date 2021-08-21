@@ -23,7 +23,7 @@ Jungle::Jungle() {
         throw("Err, can't load font filel");
     InitUI::initText(jungleRunScoreText, "Red Score: 0", 50, 0);
 	jungleRunScoreText.setPosition(WIDTH-175, 0);
-    jungleRunScoreText.setOutlineThickness(1);
+    jungleRunScoreText.setOutlineThickness(2);
     jungleRunScoreText.setOutlineColor(playerColor[RED_RUNNER]);
 }
 

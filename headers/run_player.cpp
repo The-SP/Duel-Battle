@@ -117,7 +117,7 @@ void Player::jump() {
         uvRect.top = rowNo * playerHeight;
         sprite.setTextureRect(uvRect);
     }
-    sprite.move(0, (imageNo - 5) * 1.7f);
+    sprite.move(0, (imageNo - 5) * 1.8f);
 }
 
 void Player::slide() {

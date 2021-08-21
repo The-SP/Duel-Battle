@@ -8,6 +8,7 @@ Plane::Plane() {
     if (!planeTexture.loadFromFile("./images/plane.png")) 
         throw("ERR, failed to load image file");
     plane.setTexture(&planeTexture);
+    plane.setOrigin(sf::Vector2f(30/2, 0));
 }
 
 void Plane::resetPlane(int xPos) {
