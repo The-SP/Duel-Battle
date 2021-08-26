@@ -22,7 +22,7 @@ Bird::Bird()
     starHitSound.setBuffer(starHitBuffer);
 }
 
-void Bird::update(float deltaTime, Player& player) {
+void Bird::update(Player& player, float deltaTime) {
 	totalTime += deltaTime;
 	if (totalTime >= switchTime) {
 		totalTime -= switchTime;
@@ -41,7 +41,9 @@ void Bird::update(float deltaTime, Player& player) {
 			player.star.isShooting = false;
 			player.star.setSpeed(0.8f*10);		
 		}
-		resetBird();
+		resetObstacle();
+        if (player.score %3 == 0)
+            speed = -28.f;
 	}
 	// dead bird falls on ground
 	if (speedY != 0 && sprite.getPosition().y > HEIGHT-100) {
@@ -71,7 +73,7 @@ void Bird::update(float deltaTime, Player& player) {
 	}
 }
 
-void Bird::resetBird() {
+void Bird::resetObstacle() {
 	speedY = 0;
 	rowNo = 0;
 	sprite.setPosition(WIDTH * 2.f + rand()%WIDTH, HEIGHT-200);
@@ -94,7 +96,7 @@ Saw::Saw()
 	sprite.setTextureRect(uvRect);
 }
 
-void Saw::update(float deltaTime, Player& player) {
+void Saw::update(Player& player, float deltaTime) {
 	totalTime += deltaTime;
 	if (totalTime >= switchTime) {
 		totalTime -= switchTime;
@@ -116,7 +118,7 @@ void Saw::update(float deltaTime, Player& player) {
 	}
 }
 
-void Saw::resetSaw() {
+void Saw::resetObstacle() {
 	sprite.setPosition(WIDTH, sprite.getPosition().y); // width only
 }
 
@@ -133,7 +135,7 @@ Cactus::Cactus(): speed(SCROLL_SPEED) {
 	// shape.setOutlineColor(sf::Color::Red);
 }
 
-void Cactus::update(Player& player) {
+void Cactus::update(Player& player, float deltaTime) {
 	shape.move(speed, 0);
 	if (shape.getPosition().x < -objectWidth)
 		shape.setPosition(WIDTH*1.5f, shape.getPosition().y);
@@ -143,7 +145,7 @@ void Cactus::update(Player& player) {
 	}
 }
 
-void Cactus::resetCactus() {
+void Cactus::resetObstacle() {
 	shape.setPosition(WIDTH*1.5f, shape.getPosition().y);
 }
 
@@ -163,7 +165,7 @@ Spike::Spike(): speed(SCROLL_SPEED) {
 	// shape.setOutlineColor(sf::Color::Red);
 }
 
-void Spike::update(Player& player) {
+void Spike::update(Player& player, float deltaTime) {
 	shape.move(speed, 0);
 	if (shape.getPosition().x < -100) {
 		shape.setPosition(WIDTH*1.5f, 0);
@@ -179,23 +181,28 @@ void Spike::update(Player& player) {
 		player.kill();
 }
 
-void Spike::resetSpike() {
+void Spike::resetObstacle() {
 	shape.setPosition(WIDTH*2.f, 0);
 }
 
 
+Enemy::Enemy() {
+    obstacle[0] = &bird;
+    obstacle[1] = &saw;
+    obstacle[2] = &cactus;
+    obstacle[3] = &spike;
+}
+
 void Enemy::update(float deltaTime, Player& player) {
-	bird.update(deltaTime, player);
-	saw.update(deltaTime, player);
-	cactus.update(player);
-	spike.update(player);
+    obstacle[0]->update(player, deltaTime); // bird
+    obstacle[1]->update(player, deltaTime); // saw
+    obstacle[2]->update(player); // cactus
+    obstacle[3]->update(player); // spike
 }
 
 void Enemy::resetEnemy() {
-	bird.resetBird();
-	saw.resetSaw();
-	cactus.resetCactus();
-	spike.resetSpike();
+    for (int i=0; i<4; i++)
+        obstacle[i]->resetObstacle();
 }
 
 void Enemy::drawTo(sf::RenderWindow& window) {

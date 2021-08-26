@@ -73,6 +73,7 @@ private:
     void jungleRun();
     // Game state handling
     void checkGameOver(int redScore, int blueScore);
+    void checkGameOver(char winnerColor);
     void resetGame();
 
 public:

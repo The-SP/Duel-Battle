@@ -1,0 +1,13 @@
+Building Instructions
+
+Dependency - SFML 2.5.1
+
+1) Use the Makefile to compile and run the program.
+
+2) If it does not work set up SFML 2.5.1 in root directory to your IDE and dynamically link the .dll files.
+
+Compile main.cpp in the root directory and all the files within the headers/ folder and
+link the following sfml flags with the compiler:
+-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+
+Additionally, you can refer to the official SFML documentation(https://www.sfml-dev.org/tutorials/2.5/) to build files on specific platforms.

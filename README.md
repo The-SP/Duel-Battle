@@ -1,5 +1,5 @@
 # DUEL Game Package
-A C++ academic project as a part of Object Oriented Programming course for B.E.(Computer) Second Year First Part.
+A C++ academic project made as a part of Object Oriented Programming course for B.E.(Computer) Second Year First Part.
 
 Duel Game Package is a multiplayer game where 2 players battle against each other in 
 three rounds with different games and try to outscore their opponents. The player with most 

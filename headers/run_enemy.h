@@ -2,45 +2,50 @@
 #include "entity.h"
 #include "run_player.h"
 
+class Obstacle {
+public:
+    virtual void update(Player& player, float deltaTime = 0.f) = 0;
+    virtual void resetObstacle() = 0;
+};
 
-class Bird: public SpriteEntity, public AnimationEntity {
+class Bird: public SpriteEntity, public AnimationEntity, public Obstacle{
 	float speedY = 0;
 	sf::Sound starHitSound;
 	sf::SoundBuffer starHitBuffer;
 public:
 	Bird();
-	void update(float deltaTime, Player& player);
-	void resetBird();
+	void update(Player& player, float deltaTime = 0.f);
+    void resetObstacle();
 };
 
 
-class Saw: public SpriteEntity, public AnimationEntity {
+class Saw: public SpriteEntity, public AnimationEntity, public Obstacle {
 public:
 	Saw();
-	void update(float deltaTime, Player& player);
-	void resetSaw();
+	void update(Player& player, float deltaTime = 0.f);
+    void resetObstacle();
 };
 
 
-class Cactus: public RectEntity {
+class Cactus: public RectEntity, public Obstacle {
 	float speed;
 	sf::FloatRect globalBounds();
 	sf::Texture fireTexture;
 	bool isCactus = true;
 public:
 	Cactus();
-	void update(Player& player);
-	void resetCactus();
+	void update(Player& player, float deltaTime = 0.f);
+    void resetObstacle();
 };
 
 
-class Spike: public RectEntity {
+class Spike: public RectEntity, public Obstacle {
 	float speed;
 public:
 	sf::RectangleShape hitBox;
 	Spike();
-	void update(Player& player);
-	void resetSpike();
+	void update(Player& player, float deltaTime = 0.f);
+    void resetObstacle();
 };
 
 class Enemy {
@@ -48,8 +53,9 @@ class Enemy {
 	Saw saw;
 	Cactus cactus;
 	Spike spike;
+    Obstacle* obstacle[4];
 public:
-	// Enemy();
+	Enemy();
 	void resetEnemy();
 	void update(float deltaTime, Player& player);
 	void drawTo(sf::RenderWindow& window);

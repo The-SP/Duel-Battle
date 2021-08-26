@@ -95,7 +95,7 @@ void Game::initSound() {
     if (!music.openFromFile("./sound/aot.ogg"))
         throw("ERR, cant open music file");
     music.play();
-    music.setVolume(10);
+    music.setVolume(25);
     music.setLoop(true);
     sound.setVolume(25);
     cheerSound.setVolume(35);
@@ -211,7 +211,7 @@ void Game::pingPong() {
     window.draw(scoreText);
     window.display();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) // Game Skip option
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::BackSpace)) // Game Skip option
         blueBat.score = 3;
     checkGameOver(redBat.score, blueBat.score);
 }
@@ -247,7 +247,7 @@ void Game::spaceRace() {
     window.draw(scoreText);
     window.display();
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) // Game Skip option
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::BackSpace)) // Game Skip option
         redPlane.score = 3;
     checkGameOver(redPlane.score, bluePlane.score);
 }
@@ -260,15 +260,15 @@ void Game::jungleRun() {
         gameOver = true;
         jungle.bothPlayed = false;
         if (jungle.runnerScore[0] > jungle.runnerScore[1]) 
-            checkGameOver(3, 0); // red won
+            checkGameOver('r'); // red won
         else if (jungle.runnerScore[0] < jungle.runnerScore[1])
-            checkGameOver(0, 3); // blue won
+            checkGameOver('b'); // blue won
         std::string strMessage = "Red: " + std::to_string(jungle.runnerScore[0]) + "   Blue: " + std::to_string(jungle.runnerScore[1]); 
         scoreText.setString(strMessage);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) { // game skip functionality
-        checkGameOver(3, 0);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::BackSpace)) { // game skip functionality
+        checkGameOver('b'); // making blue winner
         jungle.playerTurnIndex = 0; // red turn
         jungle.resetJungleRun();
     }
@@ -342,6 +342,21 @@ void Game::checkGameOver(int redScore, int blueScore)
         gameOver = true;
         initText(winnerText, winner, 70, 300);
     }
+}
+
+void Game::checkGameOver(char winnerColor)
+{
+    if (winnerColor == 'r') {
+        redFinalScore++;
+        winner = "Red  won!";
+        winnerText.setOutlineColor(sf::Color::Red);
+    }else {
+        blueFinalScore++;
+        winner = "Blue won!";
+        winnerText.setOutlineColor(sf::Color::Blue);
+    }
+    gameOver = true;
+    initText(winnerText, winner, 70, 300);
 }
 
 
